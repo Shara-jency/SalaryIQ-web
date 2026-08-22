@@ -1,0 +1,136 @@
+// Prisma 7: connection strings live in prisma.config.ts / the runtime adapter,
+// not in this datasource block (a `url` here is rejected by the schema engine).
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  passwordHash    String
+  fullName        String
+  experienceYears Float
+  industry        String
+  currentRole     String
+  location        String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  salaryEntries       SalaryEntry[]
+  salaryHistory       SalaryHistoryEntry[]
+  growthProjections   GrowthProjection[]
+  refreshTokens       RefreshToken[]
+  passwordResetTokens PasswordResetToken[]
+
+  @@map("users")
+}
+
+model PasswordResetToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+// Backs rate limiting for auth endpoints: one row per attempt, keyed by
+// e.g. "login:ip:1.2.3.4" or "login:email:a@b.com". No separate cleanup job
+// needed — enforceRateLimit() deletes a key's expired rows on every check.
+model RateLimitAttempt {
+  id        String   @id @default(uuid())
+  key       String
+  createdAt DateTime @default(now())
+
+  @@index([key, createdAt])
+  @@map("rate_limit_attempts")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model SalaryEntry {
+  id                    String   @id @default(uuid())
+  userId                String
+  analysisFor           String // "self" | "someone_else"
+  jobTitle              String
+  experienceYears       Float
+  city                  String
+  industry              String
+  companyTier           String // "tier1" | "tier2" | "tier3"
+  annualCtc             Float
+  monthlyInHandOverride Float?
+  taxRegime             String // "new" | "old"
+  monthlyInHand         Float
+  annualTax             Float
+  createdAt             DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("salary_entries")
+}
+
+model SalaryHistoryEntry {
+  id            String   @id @default(uuid())
+  userId        String
+  year          Int
+  annualCtc     Float
+  monthlyInHand Float?
+  jobTitle      String?
+  company       String?
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("salary_history_entries")
+}
+
+model GrowthProjection {
+  id              String   @id @default(uuid())
+  userId          String
+  salaryEntryId   String?
+  yearsToStay     Int
+  hikePercentages Float[]
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("growth_projections")
+}
+
+model MarketBenchmark {
+  id       String @id @default(uuid())
+  jobTitle String
+  city     String
+  minCtc   Float
+  avgCtc   Float
+  maxCtc   Float
+
+  @@index([jobTitle, city])
+  @@map("market_benchmarks")
+}
