@@ -1,7 +1,8 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { AppShell } from "@shared/layout/AppShell";
 import { RequireAuth } from "./RequireAuth";
 import { RequireCompleteProfile } from "./RequireCompleteProfile";
+import { RootRedirect } from "./RootRedirect";
 import { IdleSessionMonitor } from "./IdleSessionMonitor";
 import { WelcomePage } from "@features/welcome/WelcomePage";
 import { AboutPage } from "@features/about/AboutPage";
@@ -22,6 +23,9 @@ export function App() {
     <>
       <IdleSessionMonitor />
       <Routes>
+        {/* Bare root: Welcome if logged out, Home if already logged in — never a login wall */}
+        <Route path="/" element={<RootRedirect />} />
+
         {/* Standalone pages — no sidebar/nav chrome, reachable without a session */}
         <Route path="welcome" element={<WelcomePage />} />
         <Route path="login" element={<LoginPage />} />
@@ -41,7 +45,6 @@ export function App() {
 
           <Route element={<RequireAuth />}>
             <Route element={<RequireCompleteProfile />}>
-              <Route index element={<Navigate to="/home" replace />} />
               <Route path="home" element={<HomePage />} />
               <Route path="analyzer" element={<AnalyzerPage />} />
               <Route path="growth" element={<GrowthPage />} />
@@ -51,7 +54,9 @@ export function App() {
             </Route>
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/home" replace />} />
+
+        {/* Any unrecognized path — same rule as the bare root */}
+        <Route path="*" element={<RootRedirect />} />
       </Routes>
     </>
   );
