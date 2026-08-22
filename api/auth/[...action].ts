@@ -293,7 +293,9 @@ export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
 
   const handler = action ? ACTIONS[action] : undefined;
   if (!handler) {
-    res.status(404).json({ error: "Unknown auth action." });
+    // Diagnostic fields are safe to expose here — no secrets, and this only
+    // fires for a genuinely misrouted request, not normal operation.
+    res.status(404).json({ error: "Unknown auth action.", debugUrl: req.url, debugQuery: req.query });
     return;
   }
 
