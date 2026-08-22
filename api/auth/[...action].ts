@@ -13,7 +13,7 @@ import {
   verifyRefreshToken,
 } from "../_lib/auth.js";
 import { enforceRateLimit, getClientIp } from "../_lib/rateLimit.js";
-import { badRequest, withHandler } from "../_lib/respond.js";
+import { badRequest, firstCatchAllSegment, withHandler } from "../_lib/respond.js";
 import { toProfileDto } from "../_lib/mappers.js";
 import { sendPasswordResetEmail } from "../_lib/email.js";
 
@@ -288,14 +288,11 @@ const ACTIONS: Record<string, (req: VercelRequest, res: VercelResponse) => Promi
 export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
   if (!requirePost(req, res)) return;
 
-  const segments = req.query.action;
-  const action = Array.isArray(segments) ? segments[0] : segments;
+  const action = firstCatchAllSegment(req, "action");
 
   const handler = action ? ACTIONS[action] : undefined;
   if (!handler) {
-    // Diagnostic fields are safe to expose here — no secrets, and this only
-    // fires for a genuinely misrouted request, not normal operation.
-    res.status(404).json({ error: "Unknown auth action.", debugUrl: req.url, debugQuery: req.query });
+    res.status(404).json({ error: "Unknown auth action." });
     return;
   }
 

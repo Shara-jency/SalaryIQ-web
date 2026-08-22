@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { prisma } from "../_lib/prisma.js";
 import { requireAuth } from "../_lib/auth.js";
-import { badRequest, methodNotAllowed, withHandler } from "../_lib/respond.js";
+import { badRequest, firstCatchAllSegment, methodNotAllowed, withHandler } from "../_lib/respond.js";
 import { toGrowthProjectionDto } from "../_lib/mappers.js";
 
 // Combines the old latest.ts and [id].ts into one function — see
@@ -58,8 +58,7 @@ async function handleById(req: VercelRequest, res: VercelResponse, userId: strin
 export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
   const { userId } = requireAuth(req);
 
-  const segments = req.query.params;
-  const [first] = Array.isArray(segments) ? segments : segments ? [segments] : [];
+  const first = firstCatchAllSegment(req, "params");
 
   if (first === "latest") {
     if (req.method !== "GET") return methodNotAllowed(res, ["GET"]);

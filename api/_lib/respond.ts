@@ -44,3 +44,21 @@ export function methodNotAllowed(res: VercelResponse, allowed: string[]): void {
   res.setHeader("Allow", allowed.join(", "));
   res.status(405).json({ error: "Method not allowed" });
 }
+
+/**
+ * Reads the first path segment matched by a catch-all route file
+ * (`[...paramName].ts`). Next.js populates `req.query.paramName` as a
+ * string array, but Vercel's plain (non-Next.js) Node.js runtime populates
+ * it under the literal key `"...paramName"` (dots included) as a single
+ * "/"-joined string instead — this normalizes both shapes so route handlers
+ * don't need to know which one they're getting.
+ */
+export function firstCatchAllSegment(
+  req: VercelRequest,
+  paramName: string,
+): string | undefined {
+  const value = req.query[paramName] ?? req.query[`...${paramName}`];
+  if (Array.isArray(value)) return value[0];
+  if (typeof value === "string") return value.split("/")[0] || undefined;
+  return undefined;
+}
