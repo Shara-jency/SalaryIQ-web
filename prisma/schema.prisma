@@ -1,8 +1,18 @@
 // Prisma 7: connection strings live in prisma.config.ts / the runtime adapter,
 // not in this datasource block (a `url` here is rejected by the schema engine).
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider             = "prisma-client"
+  output               = "../generated/prisma"
+  // Prisma 7 defaults to .ts extensions in the generated client's own
+  // internal imports (e.g. client.ts importing "./enums.ts"). That only
+  // works when something executes the .ts files directly. Vercel's Node
+  // runtime instead compiles each file to .js individually (not one bundled
+  // file), so a literal ".ts" import breaks with ERR_MODULE_NOT_FOUND since
+  // only the compiled .js sibling exists on disk. ".js" resolves correctly
+  // both on Vercel (matches the compiled output) and locally (esbuild-based
+  // tools like Vite/tsx/Vitest already resolve a ".js" specifier to a ".ts"
+  // source file).
+  importFileExtension = "js"
 }
 
 datasource db {
