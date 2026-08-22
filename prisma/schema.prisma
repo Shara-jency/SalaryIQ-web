@@ -20,14 +20,17 @@ datasource db {
 }
 
 model User {
-  id              String   @id @default(uuid())
-  email           String   @unique
-  passwordHash    String
-  fullName        String
-  experienceYears Float
-  industry        String
-  currentRole     String
-  location        String
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String
+  fullName     String
+
+  // Left empty/zero at registration — filled in during the mandatory
+  // post-registration "complete your profile" step (see RequireCompleteProfile).
+  experienceYears Float    @default(0)
+  industry        String   @default("")
+  currentRole     String   @default("")
+  location        String   @default("")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

@@ -47,8 +47,10 @@ function resolveAppBaseUrl(req: VercelRequest): string {
 async function register(req: VercelRequest, res: VercelResponse) {
   await enforceRateLimit(`register:ip:${getClientIp(req)}`, 5, 60 * 60 * 1000);
 
-  const { email, password, fullName, experienceYears, industry, currentRole, location } =
-    req.body ?? {};
+  // Only account fields here — role/industry/experience/location are
+  // collected afterward in the mandatory profile-setup step (RequireCompleteProfile
+  // gates the rest of the app on them), so a new signup isn't a long form.
+  const { email, password, fullName } = req.body ?? {};
 
   if (typeof email !== "string" || !EMAIL_REGEX.test(email.trim())) {
     badRequest("Please provide a valid email address.");
@@ -58,13 +60,6 @@ async function register(req: VercelRequest, res: VercelResponse) {
   }
   if (typeof fullName !== "string" || !fullName.trim()) {
     badRequest("Please provide your full name.");
-  }
-  const years = Number(experienceYears);
-  if (!Number.isFinite(years) || years < 0 || years > 60) {
-    badRequest("Please provide a valid experience between 0 and 60 years.");
-  }
-  if (typeof industry !== "string" || typeof currentRole !== "string" || typeof location !== "string") {
-    badRequest("Please provide industry, current role, and location.");
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -81,10 +76,8 @@ async function register(req: VercelRequest, res: VercelResponse) {
       email: normalizedEmail,
       passwordHash,
       fullName: fullName.trim(),
-      experienceYears: years,
-      industry,
-      currentRole,
-      location,
+      // experienceYears/industry/currentRole/location use their schema
+      // defaults (0 / "" / "" / "") until profile setup fills them in.
     },
   });
 
