@@ -31,7 +31,7 @@ export function LoginPage() {
       setSubmitting(true);
       setError(null);
       await login(email.trim(), password);
-      navigate(locationState?.from ?? "/dashboard", { replace: true });
+      navigate(locationState?.from ?? "/home", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
     } finally {

@@ -40,7 +40,7 @@ export function ProfileSetupPage() {
             onSubmit={(input) => {
               updateProfile.mutate(
                 { id: profile.id, patch: input },
-                { onSuccess: () => navigate("/dashboard", { replace: true }) },
+                { onSuccess: () => navigate("/home", { replace: true }) },
               );
             }}
           />

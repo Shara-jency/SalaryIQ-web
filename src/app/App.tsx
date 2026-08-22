@@ -9,7 +9,7 @@ import { LoginPage } from "@features/auth/LoginPage";
 import { RegisterPage } from "@features/auth/RegisterPage";
 import { ForgotPasswordPage } from "@features/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "@features/auth/ResetPasswordPage";
-import { DashboardPage } from "@features/dashboard/DashboardPage";
+import { HomePage } from "@features/home/HomePage";
 import { AnalyzerPage } from "@features/analyzer/AnalyzerPage";
 import { GrowthPage } from "@features/growth/GrowthPage";
 import { HistoryPage } from "@features/history/HistoryPage";
@@ -41,8 +41,8 @@ export function App() {
 
           <Route element={<RequireAuth />}>
             <Route element={<RequireCompleteProfile />}>
-              <Route index element={<Navigate to="/dashboard" replace />} />
-              <Route path="dashboard" element={<DashboardPage />} />
+              <Route index element={<Navigate to="/home" replace />} />
+              <Route path="home" element={<HomePage />} />
               <Route path="analyzer" element={<AnalyzerPage />} />
               <Route path="growth" element={<GrowthPage />} />
               <Route path="history" element={<HistoryPage />} />
@@ -51,7 +51,7 @@ export function App() {
             </Route>
           </Route>
         </Route>
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/home" replace />} />
       </Routes>
     </>
   );
