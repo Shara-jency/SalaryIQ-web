@@ -27,6 +27,12 @@ export function ProfileSetupPage() {
             This helps SalaryIQ compare your salary against the right market benchmarks.
           </p>
 
+          {updateProfile.isError ? (
+            <p className="mb-4 rounded-lg bg-danger-light px-3 py-2 text-sm text-danger">
+              {updateProfile.error instanceof Error ? updateProfile.error.message : "Something went wrong. Please try again."}
+            </p>
+          ) : null}
+
           <ProfileForm
             initial={profile}
             submitLabel="Continue"

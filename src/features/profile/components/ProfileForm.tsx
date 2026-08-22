@@ -13,9 +13,13 @@ interface ProfileFormProps {
 export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: ProfileFormProps) {
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
   const [experienceYears, setExperienceYears] = useState(String(initial?.experienceYears ?? ""));
-  const [industry, setIndustry] = useState(initial?.industry ?? INDUSTRIES[0]);
-  const [currentRole, setCurrentRole] = useState(initial?.currentRole ?? JOB_TITLES[0]);
-  const [location, setLocation] = useState(initial?.location ?? CITIES[0]);
+  // `||` (not `??`) is deliberate: a freshly-registered profile has these as
+  // empty strings (not null/undefined) until profile-setup fills them in, and
+  // an empty string should also fall back to the default option rather than
+  // leaving the <select> bound to a value that matches nothing.
+  const [industry, setIndustry] = useState(initial?.industry || INDUSTRIES[0]);
+  const [currentRole, setCurrentRole] = useState(initial?.currentRole || JOB_TITLES[0]);
+  const [location, setLocation] = useState(initial?.location || CITIES[0]);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (event: FormEvent) => {
