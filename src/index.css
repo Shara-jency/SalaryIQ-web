@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/*
+ * Color tokens sampled from the app icon (assets/Images/salaryiq-icon.png —
+ * a deep-indigo-to-magenta-purple gradient badge with a white "SQ" mark).
+ * Defined as CSS variables (not hardcoded Tailwind config) so a future
+ * dark-mode toggle only needs to flip the value block.
+ */
+:root {
+  --color-primary: #7c22ce;
+  --color-primary-dark: #5b1aa0;
+  --color-primary-light: #f3e8ff;
+
+  /* Decorative gradient matching the icon's corners — for hero/brand
+     surfaces (Welcome hero, auth page headers), not for interactive
+     elements (buttons/links stay solid --color-primary for consistency
+     and contrast). */
+  --color-brand-from: #241259;
+  --color-brand-to: #9b2fd6;
+
+  --color-background: #f8f7fc;
+  --color-card: #ffffff;
+
+  --color-text: #17151f;
+  --color-text-secondary: #6f6b7a;
+  --color-text-light: #9995a5;
+
+  --color-border: #e5e2ec;
+
+  --color-success: #087f70;
+  --color-success-light: #ddf5f1;
+
+  --color-warning: #f59e0b;
+  --color-warning-light: #fff4d6;
+
+  --color-danger: #e55353;
+  --color-danger-light: #ffe8e8;
+
+  --color-green: #18b981;
+  --color-blue: #4776ff;
+  --color-orange: #f4a62a;
+}
+
+@theme {
+  --color-primary: var(--color-primary);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-primary-light: var(--color-primary-light);
+  --color-brand-from: var(--color-brand-from);
+  --color-brand-to: var(--color-brand-to);
+  --color-app-background: var(--color-background);
+  --color-card: var(--color-card);
+  --color-text: var(--color-text);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-light: var(--color-text-light);
+  --color-border: var(--color-border);
+  --color-success: var(--color-success);
+  --color-success-light: var(--color-success-light);
+  --color-warning: var(--color-warning);
+  --color-warning-light: var(--color-warning-light);
+  --color-danger: var(--color-danger);
+  --color-danger-light: var(--color-danger-light);
+  --color-green: var(--color-green);
+  --color-blue: var(--color-blue);
+  --color-orange: var(--color-orange);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}

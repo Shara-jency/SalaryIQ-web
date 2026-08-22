@@ -1,0 +1,85 @@
+import { NavLink, Outlet } from "react-router-dom";
+import { BrandLogo } from "@shared/ui";
+
+interface NavItem {
+  to: string;
+  label: string;
+  icon: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { to: "/dashboard", label: "Dashboard", icon: "🏠" },
+  { to: "/analyzer", label: "Analyze", icon: "🧮" },
+  { to: "/growth", label: "Growth", icon: "📈" },
+  { to: "/history", label: "History", icon: "🕒" },
+  { to: "/reports", label: "Reports", icon: "📊" },
+  { to: "/profile", label: "Profile", icon: "👤" },
+];
+
+function navLinkClasses(isActive: boolean): string {
+  return `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+    isActive ? "bg-primary-light text-primary" : "text-text-secondary hover:bg-app-background"
+  }`;
+}
+
+export function AppShell() {
+  return (
+    <div className="min-h-screen bg-app-background text-text lg:flex">
+      {/* Desktop sidebar */}
+      <aside className="hidden w-64 shrink-0 border-r border-border bg-card p-5 lg:flex lg:flex-col">
+        <div className="mb-8 px-2">
+          <BrandLogo size="md" />
+          <p className="mt-1 text-xs text-text-light">Know Your Worth</p>
+        </div>
+        <nav className="flex flex-1 flex-col gap-1">
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.to} to={item.to} className={({ isActive }) => navLinkClasses(isActive)}>
+              <span aria-hidden>{item.icon}</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+        <NavLink to="/about" className={({ isActive }) => navLinkClasses(isActive)}>
+          <span aria-hidden>❓</span>
+          About &amp; how to use
+        </NavLink>
+      </aside>
+
+      <div className="flex min-h-screen flex-1 flex-col">
+        {/* Mobile top bar */}
+        <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
+          <BrandLogo size="sm" />
+          <NavLink to="/about" className="text-sm font-semibold text-text-secondary" aria-label="About and how to use">
+            ❓
+          </NavLink>
+        </header>
+
+        <main className="flex-1 px-4 py-6 pb-24 lg:px-10 lg:py-10 lg:pb-10">
+          <div className="mx-auto w-full max-w-5xl">
+            <Outlet />
+          </div>
+        </main>
+
+        {/* Mobile bottom nav */}
+        <nav className="fixed inset-x-0 bottom-0 flex justify-between border-t border-border bg-card px-2 py-2 lg:hidden">
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `flex flex-1 flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-[11px] font-medium ${
+                  isActive ? "text-primary" : "text-text-light"
+                }`
+              }
+            >
+              <span aria-hidden className="text-base">
+                {item.icon}
+              </span>
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+    </div>
+  );
+}
