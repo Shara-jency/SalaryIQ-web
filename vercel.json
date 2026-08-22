@@ -1,5 +1,10 @@
 {
   "buildCommand": "npm run db:generate && npm run build",
   "outputDirectory": "dist",
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "functions": {
+    "api/**/*.ts": {
+      "includeFiles": "node_modules/@prisma/client/runtime/query_compiler_*postgresql*"
+    }
+  }
 }
