@@ -16,10 +16,6 @@ export interface RegisterInput {
   email: string;
   password: string;
   fullName: string;
-  experienceYears: number;
-  industry: string;
-  currentRole: string;
-  location: string;
 }
 
 interface AuthContextValue {

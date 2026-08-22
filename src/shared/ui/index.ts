@@ -6,3 +6,4 @@ export * from "./StatTile";
 export * from "./Badge";
 export * from "./EmptyState";
 export * from "./BrandLogo";
+export * from "./Footer";

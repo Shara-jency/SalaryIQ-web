@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { BrandLogo, Button, Card, Input, Select } from "@shared/ui";
-import { CITIES, INDUSTRIES, JOB_TITLES } from "@shared/constants/data";
+import { BrandLogo, Button, Card, Footer, Input } from "@shared/ui";
 import { useAuth } from "@app/AuthProvider";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,10 +13,6 @@ export function RegisterPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [fullName, setFullName] = useState("");
-  const [experienceYears, setExperienceYears] = useState("");
-  const [industry, setIndustry] = useState(INDUSTRIES[0]);
-  const [currentRole, setCurrentRole] = useState(JOB_TITLES[0]);
-  const [location, setLocation] = useState(CITIES[0]);
 
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -41,25 +36,12 @@ export function RegisterPage() {
       setError("Please enter your full name.");
       return;
     }
-    const years = Number(experienceYears);
-    if (!Number.isFinite(years) || years < 0 || years > 60) {
-      setError("Please enter a valid experience between 0 and 60 years.");
-      return;
-    }
 
     try {
       setSubmitting(true);
       setError(null);
-      await register({
-        email: email.trim(),
-        password,
-        fullName: fullName.trim(),
-        experienceYears: years,
-        industry,
-        currentRole,
-        location,
-      });
-      navigate("/dashboard", { replace: true });
+      await register({ email: email.trim(), password, fullName: fullName.trim() });
+      navigate("/profile-setup", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed.");
     } finally {
@@ -69,14 +51,14 @@ export function RegisterPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-app-background px-4 py-10">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-sm">
         <div className="mb-6 flex justify-center">
           <BrandLogo size="lg" />
         </div>
         <Card>
           <h1 className="mb-1 text-xl font-bold">Create your account</h1>
           <p className="mb-5 text-sm text-text-secondary">
-            Takes a minute — your data is tied to this account from now on.
+            Just the basics for now — you'll fill in your role and experience next.
           </p>
 
           <form onSubmit={handleSubmit}>
@@ -105,18 +87,6 @@ export function RegisterPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter your password"
             />
-            <Input
-              label="Experience (years)"
-              type="number"
-              min={0}
-              max={60}
-              value={experienceYears}
-              onChange={(e) => setExperienceYears(e.target.value)}
-              placeholder="e.g. 5"
-            />
-            <Select label="Current role" value={currentRole} onChange={(e) => setCurrentRole(e.target.value)} options={JOB_TITLES.map((t) => ({ value: t, label: t }))} />
-            <Select label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />
-            <Select label="Location" value={location} onChange={(e) => setLocation(e.target.value)} options={CITIES.map((c) => ({ value: c, label: c }))} />
 
             {error ? <p className="mb-3 text-sm text-danger">{error}</p> : null}
 
@@ -132,6 +102,7 @@ export function RegisterPage() {
             </Link>
           </p>
         </Card>
+        <Footer className="mt-6" />
       </div>
     </div>
   );

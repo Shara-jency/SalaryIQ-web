@@ -1,12 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BrandLogo, Button, Card, Input } from "@shared/ui";
+import { BrandLogo, Button, Card, Footer, Input } from "@shared/ui";
 import { useAuth } from "@app/AuthProvider";
+
+interface LoginLocationState {
+  from?: string;
+  passwordReset?: boolean;
+  sessionTimedOut?: boolean;
+}
 
 export function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const locationState = location.state as LoginLocationState | null;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,8 +31,7 @@ export function LoginPage() {
       setSubmitting(true);
       setError(null);
       await login(email.trim(), password);
-      const from = (location.state as { from?: string } | null)?.from ?? "/dashboard";
-      navigate(from, { replace: true });
+      navigate(locationState?.from ?? "/dashboard", { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed.");
     } finally {
@@ -43,9 +49,15 @@ export function LoginPage() {
           <h1 className="mb-1 text-xl font-bold">Welcome back</h1>
           <p className="mb-5 text-sm text-text-secondary">Log in to continue.</p>
 
-          {(location.state as { passwordReset?: boolean } | null)?.passwordReset ? (
+          {locationState?.passwordReset ? (
             <p className="mb-4 rounded-lg bg-success-light px-3 py-2 text-sm text-success">
               Your password has been updated — log in with your new password.
+            </p>
+          ) : null}
+
+          {locationState?.sessionTimedOut ? (
+            <p className="mb-4 rounded-lg bg-warning-light px-3 py-2 text-sm text-warning">
+              You were logged out due to inactivity.
             </p>
           ) : null}
 
@@ -87,6 +99,7 @@ export function LoginPage() {
             </Link>
           </p>
         </Card>
+        <Footer className="mt-6" />
       </div>
     </div>
   );

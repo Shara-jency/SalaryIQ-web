@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { BrandLogo, Button, Card, Input } from "@shared/ui";
+import { BrandLogo, Button, Card, Footer, Input } from "@shared/ui";
 import { resetPassword } from "./hooks/usePasswordReset";
 
 export function ResetPasswordPage() {
@@ -82,6 +82,7 @@ export function ResetPasswordPage() {
             </Link>
           </p>
         </Card>
+        <Footer className="mt-6" />
       </div>
     </div>
   );

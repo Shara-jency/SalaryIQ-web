@@ -12,7 +12,6 @@ interface ProfileFormProps {
 
 export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: ProfileFormProps) {
   const [fullName, setFullName] = useState(initial?.fullName ?? "");
-  const [email, setEmail] = useState(initial?.email ?? "");
   const [experienceYears, setExperienceYears] = useState(String(initial?.experienceYears ?? ""));
   const [industry, setIndustry] = useState(initial?.industry ?? INDUSTRIES[0]);
   const [currentRole, setCurrentRole] = useState(initial?.currentRole ?? JOB_TITLES[0]);
@@ -35,7 +34,6 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
     setError(null);
     onSubmit({
       fullName: fullName.trim(),
-      email: email.trim() || undefined,
       experienceYears: years,
       industry,
       currentRole,
@@ -46,7 +44,6 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
   return (
     <form onSubmit={handleSubmit} className="space-y-1">
       <Input label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
-      <Input label="Email (optional)" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
       <Input
         label="Experience (years)"
         type="number"

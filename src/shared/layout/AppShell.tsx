@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { BrandLogo } from "@shared/ui";
+import { BrandLogo, Footer } from "@shared/ui";
 
 interface NavItem {
   to: string;
@@ -57,6 +57,7 @@ export function AppShell() {
         <main className="flex-1 px-4 py-6 pb-24 lg:px-10 lg:py-10 lg:pb-10">
           <div className="mx-auto w-full max-w-5xl">
             <Outlet />
+            <Footer className="mt-10" />
           </div>
         </main>
 

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { BrandLogo, Button, Card } from "@shared/ui";
+import { BrandLogo, Button, Card, Footer } from "@shared/ui";
 
 const FEATURES = [
   {
@@ -79,6 +79,8 @@ export function WelcomePage() {
             </Link>
           </p>
         </div>
+
+        <Footer className="mt-12" />
       </main>
     </div>
   );

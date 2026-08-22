@@ -3,7 +3,11 @@ import { Card } from "@shared/ui";
 const HOW_TO_STEPS = [
   {
     title: "Create your account",
-    detail: "Sign up with your email and password, plus your name, current role, industry, experience, and location — this becomes your profile.",
+    detail: "Sign up with your name, email, and password — quick, just the basics.",
+  },
+  {
+    title: "Complete your profile",
+    detail: "Add your current role, industry, experience, and location so SalaryIQ can compare you against the right market benchmarks.",
   },
   {
     title: "Analyze your salary",
