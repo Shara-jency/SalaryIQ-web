@@ -16,7 +16,10 @@ declare global {
 function createClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    throw new Error("DATABASE_URL is not set");
+    throw new Error(
+      "DATABASE_URL is not set. Check Project Settings -> Environment Variables in Vercel " +
+        "(must be enabled for the environment you're testing — Production/Preview/Development).",
+    );
   }
   const adapter = new PrismaNeon({ connectionString });
   return new PrismaClient({ adapter });
@@ -26,7 +29,22 @@ function createClient(): PrismaClient {
 // scope across invocations, so without a singleton every invocation would
 // construct a new client/adapter and still exhaust connections even against
 // the pooled URL.
-export const prisma = globalThis.__prisma ?? createClient();
-if (process.env.NODE_ENV !== "production") {
-  globalThis.__prisma = prisma;
+function getPrisma(): PrismaClient {
+  if (!globalThis.__prisma) {
+    globalThis.__prisma = createClient();
+  }
+  return globalThis.__prisma;
 }
+
+// Lazy on purpose: constructing the client eagerly at module load time meant
+// a missing env var or bundling issue crashed the whole serverless function
+// during initialization (Vercel's opaque FUNCTION_INVOCATION_FAILED page,
+// bypassing our own error handling entirely). Routing every access through
+// this proxy defers construction until the first actual query, which happens
+// inside a request handler wrapped by withHandler — so the same failure now
+// surfaces as a normal, loggable 500 JSON response instead of a platform crash.
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, prop, receiver) {
+    return Reflect.get(getPrisma() as object, prop, receiver);
+  },
+});
