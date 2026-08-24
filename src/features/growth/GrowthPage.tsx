@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, Card, Input, Select } from "@shared/ui";
+import { formatIndianCurrencyInput, parseCurrencyInput } from "@shared/utils/currency";
 import { projectGrowth } from "@domain/logic";
 import { useCurrentProfile } from "@features/profile/hooks/useProfile";
 import { useLatestSalaryEntry } from "@features/analyzer/hooks/useSalaryEntries";
@@ -23,6 +24,8 @@ export function GrowthPage() {
   const [yearsToStay, setYearsToStay] = useState(3);
   const [hikes, setHikes] = useState<number[]>([10, 10, 10]);
   const [hydrated, setHydrated] = useState(false);
+  const [ctcInput, setCtcInput] = useState("");
+  const [ctcHydrated, setCtcHydrated] = useState(false);
 
   useEffect(() => {
     if (savedProjection && !hydrated) {
@@ -32,27 +35,33 @@ export function GrowthPage() {
     }
   }, [savedProjection, hydrated]);
 
-  const currentCtc = latestEntry?.annualCtc ?? 0;
-  const years = useMemo(() => projectGrowth(currentCtc, hikes), [currentCtc, hikes]);
+  // Prefills from the latest saved analysis as a convenience, but the user
+  // can freely overwrite it — growth projections shouldn't be silently
+  // pinned to whatever CTC was last analyzed.
+  useEffect(() => {
+    if (latestEntry && !ctcHydrated) {
+      setCtcInput(String(latestEntry.annualCtc));
+      setCtcHydrated(true);
+    }
+  }, [latestEntry, ctcHydrated]);
 
-  if (!currentCtc) {
-    return (
-      <div>
-        <h1 className="mb-6 text-2xl font-bold">Salary Growth</h1>
-        <Card>
-          <p className="text-sm text-text-secondary">
-            Run a salary analysis first (Analyze → for myself) so there's a current CTC to project from.
-          </p>
-        </Card>
-      </div>
-    );
-  }
+  const currentCtc = parseCurrencyInput(ctcInput);
+  const isUsingLatestEntry = Boolean(latestEntry) && currentCtc === latestEntry?.annualCtc;
+  const years = useMemo(() => projectGrowth(currentCtc, hikes), [currentCtc, hikes]);
 
   return (
     <div>
       <h1 className="mb-6 text-2xl font-bold">Salary Growth</h1>
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
+          <Input
+            label="Current annual CTC (₹)"
+            inputMode="numeric"
+            value={ctcInput}
+            onChange={(e) => setCtcInput(formatIndianCurrencyInput(e.target.value))}
+            placeholder="e.g. 18,00,000"
+          />
+
           <Select
             label="Years to stay"
             value={String(yearsToStay)}
@@ -86,13 +95,14 @@ export function GrowthPage() {
 
           <Button
             className="w-full"
+            disabled={currentCtc <= 0}
             loading={saveProjection.isPending}
             onClick={() =>
               saveProjection.mutate({
                 existingId: savedProjection?.id,
                 yearsToStay,
                 hikePercentages: hikes,
-                salaryEntryId: latestEntry?.id,
+                salaryEntryId: isUsingLatestEntry ? latestEntry?.id : undefined,
               })
             }
           >
@@ -102,7 +112,11 @@ export function GrowthPage() {
 
         <Card>
           <h2 className="mb-4 text-lg font-bold">Projected growth</h2>
-          <GrowthChart currentCtc={currentCtc} years={years} />
+          {currentCtc > 0 ? (
+            <GrowthChart currentCtc={currentCtc} years={years} />
+          ) : (
+            <p className="text-sm text-text-secondary">Enter your current annual CTC to see a projection.</p>
+          )}
         </Card>
       </div>
     </div>

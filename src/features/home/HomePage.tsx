@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Card, EmptyState } from "@shared/ui";
+import {
+  ArrowRightIcon,
+  BarChartIcon,
+  CalculatorIcon,
+  Card,
+  ClockIcon,
+  EmptyState,
+  EyeIcon,
+  EyeOffIcon,
+  TrendingUpIcon,
+} from "@shared/ui";
 import { formatCurrency } from "@shared/utils/currency";
 import { useCurrentProfile } from "@features/profile/hooks/useProfile";
 import { useLatestSalaryEntry } from "@features/analyzer/hooks/useSalaryEntries";
@@ -13,10 +23,10 @@ function getGreeting(): string {
 }
 
 const QUICK_ACTIONS = [
-  { to: "/analyzer", label: "Analyze Salary", icon: "🧮" },
-  { to: "/growth", label: "Salary Growth", icon: "📈" },
-  { to: "/history", label: "Salary History", icon: "🕒" },
-  { to: "/reports", label: "Reports", icon: "📊" },
+  { to: "/analyzer", label: "Analyze Salary", icon: CalculatorIcon },
+  { to: "/growth", label: "Salary Growth", icon: TrendingUpIcon },
+  { to: "/history", label: "Salary History", icon: ClockIcon },
+  { to: "/reports", label: "Reports", icon: BarChartIcon },
 ];
 
 export function HomePage() {
@@ -28,14 +38,14 @@ export function HomePage() {
     <div>
       <div className="mb-6">
         <p className="text-sm text-text-secondary">{getGreeting()},</p>
-        <p className="text-xl font-extrabold">{profile?.fullName ?? "there"} 👋</p>
+        <p className="text-xl font-extrabold">{profile?.fullName ?? "there"}</p>
       </div>
 
       <div className="mb-8 rounded-2xl bg-gradient-to-br from-brand-from to-brand-to p-6 text-white">
         <div className="mb-2 flex items-center justify-between">
           <p className="text-xs text-primary-light">Current CTC</p>
-          <button onClick={() => setShowSalary((v) => !v)} aria-label="Toggle salary visibility" className="text-lg">
-            {showSalary ? "🙈" : "👁️"}
+          <button onClick={() => setShowSalary((v) => !v)} aria-label="Toggle salary visibility">
+            {showSalary ? <EyeIcon className="h-5 w-5" /> : <EyeOffIcon className="h-5 w-5" />}
           </button>
         </div>
         <p className="mb-4 text-2xl font-extrabold">
@@ -53,7 +63,7 @@ export function HomePage() {
             to={action.to}
             className="flex flex-col items-center gap-2 rounded-xl border border-border bg-card py-5 text-center transition-colors hover:border-primary"
           >
-            <span className="text-2xl">{action.icon}</span>
+            <action.icon className="h-6 w-6 text-primary" aria-hidden />
             <span className="text-xs font-semibold">{action.label}</span>
           </Link>
         ))}
@@ -70,7 +80,7 @@ export function HomePage() {
               </p>
               <p className="text-xs text-text-light">{new Date(latest.createdAt).toLocaleDateString("en-IN")}</p>
             </div>
-            <span aria-hidden>→</span>
+            <ArrowRightIcon className="h-5 w-5 text-text-light" aria-hidden />
           </Card>
         </Link>
       ) : (

@@ -1,26 +1,10 @@
 import { useId, useState, type InputHTMLAttributes } from "react";
+import { EyeIcon, EyeOffIcon } from "./Icon";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
 }
-
-const EYE_OPEN = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-4.5 w-4.5">
-    <path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z" strokeLinecap="round" strokeLinejoin="round" />
-    <circle cx="12" cy="12" r="3" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-
-const EYE_OFF = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="h-4.5 w-4.5">
-    <path
-      d="M3 3l18 18M10.6 10.6a3 3 0 0 0 4.24 4.24M6.6 6.7C3.8 8.4 1.5 12 1.5 12S5 19 12 19c1.9 0 3.5-.4 4.9-1.1M17.6 15.6C20.1 13.9 22.5 12 22.5 12S19 5 12 5c-.7 0-1.4.06-2 .17"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 export function Input({ label, error, id, className = "", type, ...rest }: InputProps) {
   const generatedId = useId();
@@ -54,7 +38,7 @@ export function Input({ label, error, id, className = "", type, ...rest }: Input
             aria-label={visible ? "Hide password" : "Show password"}
             tabIndex={-1}
           >
-            {visible ? EYE_OFF : EYE_OPEN}
+            {visible ? <EyeOffIcon className="h-4.5 w-4.5" /> : <EyeIcon className="h-4.5 w-4.5" />}
           </button>
         ) : null}
       </div>

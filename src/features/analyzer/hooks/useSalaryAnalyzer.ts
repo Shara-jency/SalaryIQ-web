@@ -23,13 +23,10 @@ export interface AnalysisResult {
   percentage: number;
   status: string;
   isUnderpaid: boolean;
-  savedEntry?: SalaryEntry;
 }
 
 export function useSalaryAnalyzer() {
-  const { salaryEntryRepo, benchmarkRepo } = useRepositories();
-  const { profile } = useCurrentProfile();
-  const queryClient = useQueryClient();
+  const { benchmarkRepo } = useRepositories();
 
   return useMutation({
     mutationFn: async (form: SalaryAnalyzerFormInput): Promise<AnalysisResult> => {
@@ -44,28 +41,6 @@ export function useSalaryAnalyzer() {
       const adjusted = adjustBenchmarkForCompanyTier(matched.benchmark, form.companyTier);
       const comparison = compareWithMarket(form.annualCtc, adjusted.avgCtc);
 
-      let savedEntry: SalaryEntry | undefined;
-      if (form.analysisFor === "self") {
-        if (!profile) {
-          throw new Error("Set up your profile before saving an analysis.");
-        }
-        savedEntry = await salaryEntryRepo.create({
-          profileId: profile.id,
-          analysisFor: form.analysisFor,
-          jobTitle: form.jobTitle,
-          experienceYears: form.experienceYears,
-          city: form.city,
-          industry: form.industry,
-          companyTier: form.companyTier,
-          annualCtc: form.annualCtc,
-          monthlyInHandOverride: form.monthlyInHandOverride,
-          taxRegime: form.taxRegime,
-          monthlyInHand,
-          annualTax: taxResult.annualTax,
-          hasEmployerPf: form.hasEmployerPf,
-        });
-      }
-
       return {
         form,
         monthlyInHand,
@@ -79,11 +54,43 @@ export function useSalaryAnalyzer() {
         percentage: comparison.percentage,
         status: comparison.status,
         isUnderpaid: comparison.isUnderpaid,
-        savedEntry,
       };
     },
-    onSuccess: (result) => {
-      if (result.savedEntry && profile) {
+  });
+}
+
+// Saving is a separate, explicit step (see AnalysisResultPanel's "Save this
+// analysis" button) — analyzing no longer saves automatically, so the user
+// can try numbers out before deciding to keep one in their history.
+export function useSaveSalaryAnalysis() {
+  const { salaryEntryRepo } = useRepositories();
+  const { profile } = useCurrentProfile();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (result: AnalysisResult): Promise<SalaryEntry> => {
+      if (!profile) {
+        throw new Error("Set up your profile before saving an analysis.");
+      }
+      const { form, monthlyInHand, annualTax } = result;
+      return salaryEntryRepo.create({
+        profileId: profile.id,
+        analysisFor: form.analysisFor,
+        jobTitle: form.jobTitle,
+        experienceYears: form.experienceYears,
+        city: form.city,
+        industry: form.industry,
+        companyTier: form.companyTier,
+        annualCtc: form.annualCtc,
+        monthlyInHandOverride: form.monthlyInHandOverride,
+        taxRegime: form.taxRegime,
+        monthlyInHand,
+        annualTax,
+        hasEmployerPf: form.hasEmployerPf,
+      });
+    },
+    onSuccess: () => {
+      if (profile) {
         queryClient.invalidateQueries({ queryKey: salaryEntriesQueryKey(profile.id) });
       }
     },

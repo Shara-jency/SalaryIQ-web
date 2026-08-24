@@ -1,13 +1,17 @@
-import { Badge, Card, StatTile } from "@shared/ui";
+import { Badge, Button, Card, StatTile } from "@shared/ui";
 import { formatCurrency } from "@shared/utils/currency";
 import type { AnalysisResult } from "../hooks/useSalaryAnalyzer";
 
 interface AnalysisResultPanelProps {
   result: AnalysisResult;
   onViewBreakdown: () => void;
+  onSave: () => void;
+  isSaving: boolean;
+  isSaved: boolean;
+  saveError: string | null;
 }
 
-export function AnalysisResultPanel({ result, onViewBreakdown }: AnalysisResultPanelProps) {
+export function AnalysisResultPanel({ result, onViewBreakdown, onSave, isSaving, isSaved, saveError }: AnalysisResultPanelProps) {
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
@@ -19,7 +23,20 @@ export function AnalysisResultPanel({ result, onViewBreakdown }: AnalysisResultP
         <p className="mb-4 rounded-lg bg-primary-light px-3 py-2 text-xs text-primary">
           This is a one-time analysis and was not saved.
         </p>
-      ) : null}
+      ) : (
+        <div className="mb-4">
+          {isSaved ? (
+            <p className="rounded-lg bg-success-light px-3 py-2 text-xs text-success">
+              Saved to your salary history.
+            </p>
+          ) : (
+            <Button variant="secondary" className="w-full" loading={isSaving} onClick={onSave}>
+              Save this analysis
+            </Button>
+          )}
+          {saveError ? <p className="mt-2 text-xs text-danger">{saveError}</p> : null}
+        </div>
+      )}
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <StatTile label="Annual CTC entered" value={formatCurrency(result.form.annualCtc)} />

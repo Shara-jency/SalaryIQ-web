@@ -1,4 +1,4 @@
-import { Card } from "@shared/ui";
+import { AlertTriangleIcon, Card } from "@shared/ui";
 
 const HOW_TO_STEPS = [
   {
@@ -77,7 +77,7 @@ export function AboutPage() {
         <ul className="space-y-3">
           {WHAT_TO_CHECK.map((point) => (
             <li key={point} className="flex gap-3 text-sm text-text-secondary">
-              <span aria-hidden>⚠️</span>
+              <AlertTriangleIcon className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden />
               <span>{point}</span>
             </li>
           ))}

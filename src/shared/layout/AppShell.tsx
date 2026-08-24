@@ -1,20 +1,33 @@
+import type { ComponentType } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { BrandLogo, Footer } from "@shared/ui";
+import {
+  BarChartIcon,
+  BrandLogo,
+  CalculatorIcon,
+  ClockIcon,
+  Footer,
+  HelpCircleIcon,
+  HomeIcon,
+  LogOutIcon,
+  TrendingUpIcon,
+  UserIcon,
+  type IconProps,
+} from "@shared/ui";
 import { useAuth } from "@app/AuthProvider";
 
 interface NavItem {
   to: string;
   label: string;
-  icon: string;
+  icon: ComponentType<IconProps>;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/home", label: "Home", icon: "🏠" },
-  { to: "/analyzer", label: "Analyze", icon: "🧮" },
-  { to: "/growth", label: "Growth", icon: "📈" },
-  { to: "/history", label: "History", icon: "🕒" },
-  { to: "/reports", label: "Reports", icon: "📊" },
-  { to: "/profile", label: "Profile", icon: "👤" },
+  { to: "/home", label: "Home", icon: HomeIcon },
+  { to: "/analyzer", label: "Analyze", icon: CalculatorIcon },
+  { to: "/growth", label: "Growth", icon: TrendingUpIcon },
+  { to: "/history", label: "History", icon: ClockIcon },
+  { to: "/reports", label: "Reports", icon: BarChartIcon },
+  { to: "/profile", label: "Profile", icon: UserIcon },
 ];
 
 function navLinkClasses(isActive: boolean): string {
@@ -44,13 +57,13 @@ export function AppShell() {
         <nav className="flex flex-1 flex-col gap-1">
           {NAV_ITEMS.map((item) => (
             <NavLink key={item.to} to={item.to} className={({ isActive }) => navLinkClasses(isActive)}>
-              <span aria-hidden>{item.icon}</span>
+              <item.icon className="h-5 w-5 shrink-0" aria-hidden />
               {item.label}
             </NavLink>
           ))}
         </nav>
         <NavLink to="/about" className={({ isActive }) => navLinkClasses(isActive)}>
-          <span aria-hidden>❓</span>
+          <HelpCircleIcon className="h-5 w-5 shrink-0" aria-hidden />
           About &amp; how to use
         </NavLink>
         {isAuthenticated ? (
@@ -58,7 +71,7 @@ export function AppShell() {
             onClick={handleLogout}
             className="mt-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-danger transition-colors hover:bg-danger-light"
           >
-            <span aria-hidden>🚪</span>
+            <LogOutIcon className="h-5 w-5 shrink-0" aria-hidden />
             Log out
           </button>
         ) : null}
@@ -69,12 +82,12 @@ export function AppShell() {
         <header className="flex items-center justify-between border-b border-border bg-card px-4 py-3 lg:hidden">
           <BrandLogo size="sm" />
           <div className="flex items-center gap-4">
-            <NavLink to="/about" className="text-sm font-semibold text-text-secondary" aria-label="About and how to use">
-              ❓
+            <NavLink to="/about" className="text-text-secondary" aria-label="About and how to use">
+              <HelpCircleIcon className="h-5 w-5" />
             </NavLink>
             {isAuthenticated ? (
-              <button onClick={handleLogout} className="text-sm font-semibold text-danger" aria-label="Log out">
-                🚪
+              <button onClick={handleLogout} className="text-danger" aria-label="Log out">
+                <LogOutIcon className="h-5 w-5" />
               </button>
             ) : null}
           </div>
@@ -99,9 +112,7 @@ export function AppShell() {
                 }`
               }
             >
-              <span aria-hidden className="text-base">
-                {item.icon}
-              </span>
+              <item.icon className="h-5 w-5" aria-hidden />
               {item.label}
             </NavLink>
           ))}

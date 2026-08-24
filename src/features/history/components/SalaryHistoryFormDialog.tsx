@@ -6,6 +6,7 @@ import type { CreateSalaryHistoryInput, SalaryHistoryEntry } from "@domain/model
 interface SalaryHistoryFormDialogProps {
   profileId: string;
   initial?: SalaryHistoryEntry;
+  initialYear?: number;
   onSubmit: (input: CreateSalaryHistoryInput) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
@@ -14,11 +15,12 @@ interface SalaryHistoryFormDialogProps {
 export function SalaryHistoryFormDialog({
   profileId,
   initial,
+  initialYear,
   onSubmit,
   onCancel,
   isSubmitting,
 }: SalaryHistoryFormDialogProps) {
-  const [year, setYear] = useState(String(initial?.year ?? new Date().getFullYear()));
+  const [year, setYear] = useState(String(initial?.year ?? initialYear ?? new Date().getFullYear()));
   const [annualCtc, setAnnualCtc] = useState(initial ? String(initial.annualCtc) : "");
   const [monthlyInHand, setMonthlyInHand] = useState(initial?.monthlyInHand ? String(initial.monthlyInHand) : "");
   const [jobTitle, setJobTitle] = useState(initial?.jobTitle ?? "");

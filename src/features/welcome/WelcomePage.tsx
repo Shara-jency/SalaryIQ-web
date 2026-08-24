@@ -1,24 +1,24 @@
 import { Link } from "react-router-dom";
-import { BrandLogo, Button, Card, Footer } from "@shared/ui";
+import { BarChartIcon, BrandLogo, Button, CalculatorIcon, Card, ClockIcon, Footer, TrendingUpIcon } from "@shared/ui";
 
 const FEATURES = [
   {
-    icon: "🧮",
+    icon: CalculatorIcon,
     title: "Salary Analyzer",
     description: "Compare your CTC against India 2025–26 market benchmarks and see an estimated in-hand salary.",
   },
   {
-    icon: "📈",
+    icon: TrendingUpIcon,
     title: "Growth Projector",
     description: "Simulate future salary growth over 1–10 years using your own expected hike percentages.",
   },
   {
-    icon: "🕒",
+    icon: ClockIcon,
     title: "Salary History",
     description: "Manually log past salaries by year so you can track how your earnings changed over time.",
   },
   {
-    icon: "📊",
+    icon: BarChartIcon,
     title: "Reports",
     description: "See aggregate stats across everything you've saved — average CTC, highest CTC, roles tracked.",
   },
@@ -47,9 +47,7 @@ export function WelcomePage() {
         <div className="mb-12 grid gap-4 sm:grid-cols-2">
           {FEATURES.map((feature) => (
             <Card key={feature.title} className="flex gap-4">
-              <span className="text-2xl" aria-hidden>
-                {feature.icon}
-              </span>
+              <feature.icon className="h-6 w-6 shrink-0 text-primary" aria-hidden />
               <div>
                 <p className="font-semibold">{feature.title}</p>
                 <p className="text-sm text-text-secondary">{feature.description}</p>
