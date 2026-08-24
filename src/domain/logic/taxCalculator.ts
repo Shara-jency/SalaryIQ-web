@@ -9,6 +9,23 @@ import type { TaxRegime } from "../models";
 const STANDARD_DEDUCTION_NEW = 75000;
 const STANDARD_DEDUCTION_OLD = 50000;
 
+// EPF (Employees' Provident Fund): the employee contributes 12% of basic
+// pay, calculated on basic capped at the EPFO wage ceiling of ₹15,000/month
+// (₹1,80,000/year). Some employers match this with an equal contribution
+// that's part of CTC but never reaches the employee; others (esp. smaller
+// companies) don't structure CTC with an employer PF component at all — the
+// caller indicates which applies via `hasEmployerPf`. Since the actual CTC
+// break-up isn't collected from the user, basic pay is approximated as 50%
+// of CTC — a common assumption used by online in-hand salary calculators.
+const ASSUMED_BASIC_PERCENTAGE_OF_CTC = 0.5;
+const EPF_RATE = 0.12;
+const EPF_WAGE_CEILING_ANNUAL = 15000 * 12;
+
+export interface EpfDeductions {
+  employeePF: number;
+  employerPF: number;
+}
+
 export interface InHandResult {
   monthlyInHand: number;
   takeHomePercentage: number;
@@ -17,15 +34,26 @@ export interface InHandResult {
 
 export interface SalaryBreakdown {
   annualCTC: number;
+  employerPF: number;
+  grossSalary: number;
   standardDeduction: number;
   taxableIncome: number;
   annualTax: number;
+  employeePF: number;
   annualInHand: number;
   monthlyCTC: number;
   monthlyTax: number;
+  monthlyPF: number;
   monthlyInHand: number;
   taxPercentage: number;
   takeHomePercentage: number;
+}
+
+function calculateEpfDeductions(annualCTC: number, hasEmployerPf: boolean): EpfDeductions {
+  const basic = annualCTC * ASSUMED_BASIC_PERCENTAGE_OF_CTC;
+  const pfWage = Math.min(basic, EPF_WAGE_CEILING_ANNUAL);
+  const contribution = Math.round(pfWage * EPF_RATE);
+  return { employeePF: contribution, employerPF: hasEmployerPf ? contribution : 0 };
 }
 
 function calculateNewRegimeTax(taxableIncome: number): number {
@@ -71,16 +99,23 @@ function calculateOldRegimeTax(taxableIncome: number): number {
   return Math.round(tax * 1.04);
 }
 
-export function calculateInHandSalary(annualCTC: number, taxRegime: TaxRegime): InHandResult {
+export function calculateInHandSalary(
+  annualCTC: number,
+  taxRegime: TaxRegime,
+  hasEmployerPf: boolean = true,
+): InHandResult {
   if (!Number.isFinite(annualCTC) || annualCTC <= 0) {
     return { monthlyInHand: 0, takeHomePercentage: 0, annualTax: 0 };
   }
 
+  const { employeePF, employerPF } = calculateEpfDeductions(annualCTC, hasEmployerPf);
+  const grossSalary = annualCTC - employerPF;
+
   const standardDeduction = taxRegime === "new" ? STANDARD_DEDUCTION_NEW : STANDARD_DEDUCTION_OLD;
-  const taxableIncome = Math.max(0, annualCTC - standardDeduction);
+  const taxableIncome = Math.max(0, grossSalary - standardDeduction);
   const annualTax =
     taxRegime === "new" ? calculateNewRegimeTax(taxableIncome) : calculateOldRegimeTax(taxableIncome);
-  const annualInHand = Math.max(0, annualCTC - annualTax);
+  const annualInHand = Math.max(0, grossSalary - employeePF - annualTax);
   const monthlyInHand = Math.round(annualInHand / 12);
   const takeHomePercentage =
     annualCTC > 0 ? Number(((annualInHand / annualCTC) * 100).toFixed(1)) : 0;
@@ -88,30 +123,42 @@ export function calculateInHandSalary(annualCTC: number, taxRegime: TaxRegime): 
   return { monthlyInHand, takeHomePercentage, annualTax };
 }
 
-export function getSalaryBreakdown(annualCTC: number, taxRegime: TaxRegime): SalaryBreakdown {
+export function getSalaryBreakdown(
+  annualCTC: number,
+  taxRegime: TaxRegime,
+  hasEmployerPf: boolean = true,
+): SalaryBreakdown {
   if (!Number.isFinite(annualCTC) || annualCTC <= 0) {
     return {
       annualCTC: 0,
+      employerPF: 0,
+      grossSalary: 0,
       standardDeduction: 0,
       taxableIncome: 0,
       annualTax: 0,
+      employeePF: 0,
       annualInHand: 0,
       monthlyCTC: 0,
       monthlyTax: 0,
+      monthlyPF: 0,
       monthlyInHand: 0,
       taxPercentage: 0,
       takeHomePercentage: 0,
     };
   }
 
+  const { employeePF, employerPF } = calculateEpfDeductions(annualCTC, hasEmployerPf);
+  const grossSalary = annualCTC - employerPF;
+
   const standardDeduction = taxRegime === "new" ? STANDARD_DEDUCTION_NEW : STANDARD_DEDUCTION_OLD;
-  const taxableIncome = Math.max(0, annualCTC - standardDeduction);
+  const taxableIncome = Math.max(0, grossSalary - standardDeduction);
   const annualTax =
     taxRegime === "new" ? calculateNewRegimeTax(taxableIncome) : calculateOldRegimeTax(taxableIncome);
-  const annualInHand = Math.max(0, annualCTC - annualTax);
+  const annualInHand = Math.max(0, grossSalary - employeePF - annualTax);
 
   const monthlyCTC = Math.round(annualCTC / 12);
   const monthlyTax = Math.round(annualTax / 12);
+  const monthlyPF = Math.round(employeePF / 12);
   const monthlyInHand = Math.round(annualInHand / 12);
 
   const taxPercentage = annualCTC > 0 ? Number(((annualTax / annualCTC) * 100).toFixed(1)) : 0;
@@ -120,12 +167,16 @@ export function getSalaryBreakdown(annualCTC: number, taxRegime: TaxRegime): Sal
 
   return {
     annualCTC,
+    employerPF,
+    grossSalary,
     standardDeduction,
     taxableIncome,
     annualTax,
+    employeePF,
     annualInHand,
     monthlyCTC,
     monthlyTax,
+    monthlyPF,
     monthlyInHand,
     taxPercentage,
     takeHomePercentage,

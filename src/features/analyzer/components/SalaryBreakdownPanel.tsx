@@ -6,6 +6,7 @@ import type { TaxRegime } from "@domain/models";
 interface SalaryBreakdownPanelProps {
   annualCtc: number;
   taxRegime: TaxRegime;
+  hasEmployerPf: boolean;
   onBack: () => void;
 }
 
@@ -21,8 +22,8 @@ function Row({ label, value, sub }: { label: string; value: string; sub?: string
   );
 }
 
-export function SalaryBreakdownPanel({ annualCtc, taxRegime, onBack }: SalaryBreakdownPanelProps) {
-  const breakdown = getSalaryBreakdown(annualCtc, taxRegime);
+export function SalaryBreakdownPanel({ annualCtc, taxRegime, hasEmployerPf, onBack }: SalaryBreakdownPanelProps) {
+  const breakdown = getSalaryBreakdown(annualCtc, taxRegime, hasEmployerPf);
 
   return (
     <Card>
@@ -32,17 +33,24 @@ export function SalaryBreakdownPanel({ annualCtc, taxRegime, onBack }: SalaryBre
       <h2 className="mb-4 text-lg font-bold">Salary breakdown</h2>
 
       <Row label="Annual CTC" value={formatCurrency(breakdown.annualCTC)} />
+      {hasEmployerPf ? (
+        <Row label="Employer PF contribution" value={formatCurrency(breakdown.employerPF)} sub="Part of CTC, not paid out" />
+      ) : null}
+      <Row label="Gross salary" value={formatCurrency(breakdown.grossSalary)} sub={hasEmployerPf ? "CTC minus employer PF" : "No employer PF in this CTC"} />
       <Row label="Standard deduction" value={formatCurrency(breakdown.standardDeduction)} sub={taxRegime === "new" ? "New regime" : "Old regime"} />
       <Row label="Taxable income" value={formatCurrency(breakdown.taxableIncome)} />
       <Row label="Annual tax" value={formatCurrency(breakdown.annualTax)} sub={`${breakdown.taxPercentage}% of CTC`} />
+      <Row label="Employee PF deduction" value={formatCurrency(breakdown.employeePF)} />
       <Row label="Annual in-hand" value={formatCurrency(breakdown.annualInHand)} sub={`${breakdown.takeHomePercentage}% take-home`} />
       <Row label="Monthly CTC" value={formatCurrency(breakdown.monthlyCTC)} />
       <Row label="Monthly tax" value={formatCurrency(breakdown.monthlyTax)} />
+      <Row label="Monthly PF deduction" value={formatCurrency(breakdown.monthlyPF)} />
       <Row label="Monthly in-hand" value={formatCurrency(breakdown.monthlyInHand)} />
 
       <p className="mt-4 text-xs text-text-light">
-        Estimated calculation based on CTC and tax regime; actual in-hand may differ depending on your employer's
-        specific salary structure, PF, and bonuses.
+        Estimated calculation based on CTC, tax regime, and a standard 50% basic-pay assumption for PF (12% employee
+        {hasEmployerPf ? " + 12% employer" : ""}, capped at the ₹15,000/month EPFO wage ceiling). Actual in-hand may
+        differ depending on your employer's specific salary structure and bonuses.
       </p>
     </Card>
   );

@@ -34,6 +34,7 @@ export function AnalyzerPage() {
             <SalaryBreakdownPanel
               annualCtc={result.form.annualCtc}
               taxRegime={result.form.taxRegime}
+              hasEmployerPf={result.form.hasEmployerPf}
               onBack={() => setShowBreakdown(false)}
             />
           ) : null}

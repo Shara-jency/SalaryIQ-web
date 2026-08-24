@@ -56,6 +56,7 @@ describe("LocalProfileRepository", () => {
       taxRegime: "new",
       monthlyInHand: 150000,
       annualTax: 200000,
+      hasEmployerPf: true,
     });
     expect(await entryRepo.list(profile.id)).toHaveLength(1);
 

@@ -53,9 +53,10 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
         type="number"
         min={0}
         max={60}
+        step="any"
         value={experienceYears}
         onChange={(e) => setExperienceYears(e.target.value)}
-        placeholder="e.g. 5"
+        placeholder="e.g. 5.5"
       />
       <Select label="Current role" value={currentRole} onChange={(e) => setCurrentRole(e.target.value)} options={JOB_TITLES.map((t) => ({ value: t, label: t }))} />
       <Select label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />

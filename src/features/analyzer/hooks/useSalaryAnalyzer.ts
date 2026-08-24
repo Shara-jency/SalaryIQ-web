@@ -33,7 +33,7 @@ export function useSalaryAnalyzer() {
 
   return useMutation({
     mutationFn: async (form: SalaryAnalyzerFormInput): Promise<AnalysisResult> => {
-      const taxResult = calculateInHandSalary(form.annualCtc, form.taxRegime);
+      const taxResult = calculateInHandSalary(form.annualCtc, form.taxRegime, form.hasEmployerPf);
       const monthlyInHand = form.monthlyInHandOverride ?? taxResult.monthlyInHand;
 
       const matched = await benchmarkRepo.match({
@@ -62,6 +62,7 @@ export function useSalaryAnalyzer() {
           taxRegime: form.taxRegime,
           monthlyInHand,
           annualTax: taxResult.annualTax,
+          hasEmployerPf: form.hasEmployerPf,
         });
       }
 

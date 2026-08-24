@@ -1,8 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Button, Card, Input, Select } from "@shared/ui";
 import { CITIES, COMPANY_TIERS, INDUSTRIES, JOB_TITLES, TAX_REGIMES } from "@shared/constants/data";
 import { formatIndianCurrencyInput, parseCurrencyInput } from "@shared/utils/currency";
-import type { CompanyTier, TaxRegime } from "@domain/models";
+import { useCurrentProfile } from "@features/profile/hooks/useProfile";
+import type { CompanyTier, Profile, TaxRegime } from "@domain/models";
 import type { SalaryAnalyzerFormInput } from "../types";
 
 interface AnalyzerFormProps {
@@ -10,17 +11,55 @@ interface AnalyzerFormProps {
   isSubmitting?: boolean;
 }
 
+function selfDefaults(profile: Profile | null) {
+  return {
+    jobTitle: profile && JOB_TITLES.includes(profile.currentRole) ? profile.currentRole : JOB_TITLES[0],
+    experience: profile?.experienceYears ? String(profile.experienceYears) : "",
+    city: profile && CITIES.includes(profile.location) ? profile.location : CITIES[0],
+    industry: profile && INDUSTRIES.includes(profile.industry) ? profile.industry : INDUSTRIES[0],
+  };
+}
+
 export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
+  const { profile } = useCurrentProfile();
   const [analysisFor, setAnalysisFor] = useState<"self" | "someone_else">("self");
-  const [jobTitle, setJobTitle] = useState(JOB_TITLES[0]);
-  const [experience, setExperience] = useState("");
-  const [city, setCity] = useState(CITIES[0]);
-  const [industry, setIndustry] = useState(INDUSTRIES[0]);
+  const [jobTitle, setJobTitle] = useState(() => selfDefaults(profile).jobTitle);
+  const [experience, setExperience] = useState(() => selfDefaults(profile).experience);
+  const [city, setCity] = useState(() => selfDefaults(profile).city);
+  const [industry, setIndustry] = useState(() => selfDefaults(profile).industry);
   const [companyTier, setCompanyTier] = useState<CompanyTier>("tier2");
   const [ctcInput, setCtcInput] = useState("");
   const [monthlyOverrideInput, setMonthlyOverrideInput] = useState("");
   const [taxRegime, setTaxRegime] = useState<TaxRegime>("new");
+  const [hasEmployerPf, setHasEmployerPf] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hydratedFromProfile, setHydratedFromProfile] = useState(false);
+
+  useEffect(() => {
+    if (!profile || hydratedFromProfile) return;
+    const defaults = selfDefaults(profile);
+    setJobTitle(defaults.jobTitle);
+    setExperience(defaults.experience);
+    setCity(defaults.city);
+    setIndustry(defaults.industry);
+    setHydratedFromProfile(true);
+  }, [profile, hydratedFromProfile]);
+
+  const handleAnalysisForChange = (option: "self" | "someone_else") => {
+    setAnalysisFor(option);
+    if (option === "self") {
+      const defaults = selfDefaults(profile);
+      setJobTitle(defaults.jobTitle);
+      setExperience(defaults.experience);
+      setCity(defaults.city);
+      setIndustry(defaults.industry);
+    } else {
+      setJobTitle(JOB_TITLES[0]);
+      setExperience("");
+      setCity(CITIES[0]);
+      setIndustry(INDUSTRIES[0]);
+    }
+  };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -52,6 +91,7 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
       annualCtc,
       monthlyInHandOverride: monthlyOverrideInput ? parseCurrencyInput(monthlyOverrideInput) : undefined,
       taxRegime,
+      hasEmployerPf,
     });
   };
 
@@ -63,7 +103,7 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
             <button
               type="button"
               key={option}
-              onClick={() => setAnalysisFor(option)}
+              onClick={() => handleAnalysisForChange(option)}
               className={`flex-1 rounded-lg border px-3 py-2 text-sm font-semibold transition-colors ${
                 analysisFor === option
                   ? "border-primary bg-primary-light text-primary"
@@ -86,9 +126,10 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
           type="number"
           min={0}
           max={60}
+          step="any"
           value={experience}
           onChange={(e) => setExperience(e.target.value)}
-          placeholder="e.g. 5"
+          placeholder="e.g. 5.5"
         />
         <Select label="City" value={city} onChange={(e) => setCity(e.target.value)} options={CITIES.map((c) => ({ value: c, label: c }))} />
         <Select
@@ -122,6 +163,15 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
           value={taxRegime}
           onChange={(e) => setTaxRegime(e.target.value as TaxRegime)}
           options={TAX_REGIMES}
+        />
+        <Select
+          label="Employer PF contribution"
+          value={hasEmployerPf ? "yes" : "no"}
+          onChange={(e) => setHasEmployerPf(e.target.value === "yes")}
+          options={[
+            { value: "yes", label: "Yes, part of my CTC" },
+            { value: "no", label: "No, only my own PF is deducted" },
+          ]}
         />
 
         {error ? <p className="mb-3 text-sm text-danger">{error}</p> : null}

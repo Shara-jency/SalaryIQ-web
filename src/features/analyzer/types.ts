@@ -10,4 +10,5 @@ export interface SalaryAnalyzerFormInput {
   annualCtc: number;
   monthlyInHandOverride?: number;
   taxRegime: TaxRegime;
+  hasEmployerPf: boolean;
 }

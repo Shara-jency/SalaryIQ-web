@@ -29,9 +29,14 @@ export class LocalSalaryEntryRepository implements ISalaryEntryRepository {
 
   async create(input: CreateSalaryEntryInput): Promise<SalaryEntry> {
     const db = await this.dbPromise;
+    // `hasEmployerPf` is only needed for the API mode's server-side
+    // recompute (see CreateSalaryEntryInput) — monthlyInHand/annualTax here
+    // were already computed with it client-side, so it isn't a SalaryEntry field.
+    const { hasEmployerPf, ...rest } = input;
+    void hasEmployerPf;
     const entry: SalaryEntry = {
       id: generateId(),
-      ...input,
+      ...rest,
       createdAt: new Date().toISOString(),
     };
     await db.put("salaryEntries", entry);

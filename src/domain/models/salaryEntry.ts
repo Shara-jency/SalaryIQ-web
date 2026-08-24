@@ -27,4 +27,8 @@ export type CreateSalaryEntryInput = Omit<
 > & {
   monthlyInHand: number;
   annualTax: number;
+  // Whether the employer contributes a matching PF share as part of this
+  // CTC. Only used to recompute monthlyInHand/annualTax server-side in API
+  // mode (see api/salary-entries/index.ts) — not a persisted SalaryEntry field.
+  hasEmployerPf: boolean;
 };
