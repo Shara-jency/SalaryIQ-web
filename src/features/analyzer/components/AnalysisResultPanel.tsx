@@ -23,20 +23,7 @@ export function AnalysisResultPanel({ result, onViewBreakdown, onSave, isSaving,
         <p className="mb-4 rounded-lg bg-primary-light px-3 py-2 text-xs text-primary">
           This is a one-time analysis and was not saved.
         </p>
-      ) : (
-        <div className="mb-4">
-          {isSaved ? (
-            <p className="rounded-lg bg-success-light px-3 py-2 text-xs text-success">
-              Saved to your salary history.
-            </p>
-          ) : (
-            <Button variant="secondary" className="w-full" loading={isSaving} onClick={onSave}>
-              Save this analysis
-            </Button>
-          )}
-          {saveError ? <p className="mt-2 text-xs text-danger">{saveError}</p> : null}
-        </div>
-      )}
+      ) : null}
 
       <div className="mb-4 grid grid-cols-2 gap-3">
         <StatTile label="Annual CTC entered" value={formatCurrency(result.form.annualCtc)} />
@@ -66,6 +53,21 @@ export function AnalysisResultPanel({ result, onViewBreakdown, onSave, isSaving,
       <button onClick={onViewBreakdown} className="text-sm font-semibold text-primary hover:underline">
         View full salary breakdown →
       </button>
+
+      {result.form.analysisFor === "self" ? (
+        <div className="mt-5 border-t border-border pt-4">
+          {isSaved ? (
+            <p className="rounded-lg bg-success-light px-3 py-2 text-center text-sm font-semibold text-success">
+              Saved to your salary history.
+            </p>
+          ) : (
+            <Button className="w-full" loading={isSaving} onClick={onSave}>
+              Save this analysis
+            </Button>
+          )}
+          {saveError ? <p className="mt-2 text-xs text-danger">{saveError}</p> : null}
+        </div>
+      ) : null}
     </Card>
   );
 }
