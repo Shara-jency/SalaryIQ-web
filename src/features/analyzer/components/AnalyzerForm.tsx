@@ -9,6 +9,7 @@ import type { SalaryAnalyzerFormInput } from "../types";
 interface AnalyzerFormProps {
   onSubmit: (form: SalaryAnalyzerFormInput) => void;
   isSubmitting?: boolean;
+  onAnalysisForChange?: (option: "self" | "someone_else") => void;
 }
 
 function selfDefaults(profile: Profile | null) {
@@ -17,10 +18,11 @@ function selfDefaults(profile: Profile | null) {
     experience: profile?.experienceYears ? String(profile.experienceYears) : "",
     city: profile && CITIES.includes(profile.location) ? profile.location : CITIES[0],
     industry: profile && INDUSTRIES.includes(profile.industry) ? profile.industry : INDUSTRIES[0],
+    ctc: profile?.currentCtc ? formatIndianCurrencyInput(String(profile.currentCtc)) : "",
   };
 }
 
-export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
+export function AnalyzerForm({ onSubmit, isSubmitting, onAnalysisForChange }: AnalyzerFormProps) {
   const { profile } = useCurrentProfile();
   const [analysisFor, setAnalysisFor] = useState<"self" | "someone_else">("self");
   const [jobTitle, setJobTitle] = useState(() => selfDefaults(profile).jobTitle);
@@ -28,7 +30,7 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
   const [city, setCity] = useState(() => selfDefaults(profile).city);
   const [industry, setIndustry] = useState(() => selfDefaults(profile).industry);
   const [companyTier, setCompanyTier] = useState<CompanyTier>("tier2");
-  const [ctcInput, setCtcInput] = useState("");
+  const [ctcInput, setCtcInput] = useState(() => selfDefaults(profile).ctc);
   const [monthlyOverrideInput, setMonthlyOverrideInput] = useState("");
   const [taxRegime, setTaxRegime] = useState<TaxRegime>("new");
   const [hasEmployerPf, setHasEmployerPf] = useState(true);
@@ -42,22 +44,26 @@ export function AnalyzerForm({ onSubmit, isSubmitting }: AnalyzerFormProps) {
     setExperience(defaults.experience);
     setCity(defaults.city);
     setIndustry(defaults.industry);
+    setCtcInput(defaults.ctc);
     setHydratedFromProfile(true);
   }, [profile, hydratedFromProfile]);
 
   const handleAnalysisForChange = (option: "self" | "someone_else") => {
     setAnalysisFor(option);
+    onAnalysisForChange?.(option);
     if (option === "self") {
       const defaults = selfDefaults(profile);
       setJobTitle(defaults.jobTitle);
       setExperience(defaults.experience);
       setCity(defaults.city);
       setIndustry(defaults.industry);
+      setCtcInput(defaults.ctc);
     } else {
       setJobTitle(JOB_TITLES[0]);
       setExperience("");
       setCity(CITIES[0]);
       setIndustry(INDUSTRIES[0]);
+      setCtcInput("");
     }
   };
 

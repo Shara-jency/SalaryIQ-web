@@ -21,6 +21,14 @@ export function AnalyzerPage() {
             saveAnalysis.reset();
             analyze.mutate(form, { onSuccess: setResult });
           }}
+          onAnalysisForChange={() => {
+            // Switching "For myself" <-> "For someone else" invalidates
+            // whatever result/save-state is on screen — it belongs to the
+            // mode you just left, not the one you're switching to.
+            setResult(null);
+            setShowBreakdown(false);
+            saveAnalysis.reset();
+          }}
         />
 
         <div>

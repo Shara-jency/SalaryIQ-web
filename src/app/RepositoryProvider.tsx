@@ -2,7 +2,10 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { createRepositories, resolveDataMode, type Repositories } from "./repositoryFactory";
 import { useAuth } from "./AuthProvider";
 
-const RepositoryContext = createContext<Repositories | null>(null);
+// Exported so tests can render feature components under a controlled set of
+// repositories (e.g. local/in-memory) without going through the real
+// AuthProvider + resolveDataMode() wiring.
+export const RepositoryContext = createContext<Repositories | null>(null);
 
 async function bootstrapLocalData(repos: Repositories): Promise<void> {
   if (repos.benchmarkRepo.seedIfEmpty) {
