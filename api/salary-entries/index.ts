@@ -33,6 +33,7 @@ export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
       annualCtc,
       monthlyInHandOverride,
       taxRegime,
+      hasEmployerPf,
     } = req.body ?? {};
 
     if (!ANALYSIS_FOR_VALUES.includes(analysisFor)) badRequest("Invalid analysisFor.");
@@ -53,8 +54,10 @@ export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
     // Tax figures are always computed server-side from the CTC/regime — the
     // client never gets to dictate the canonical tax numbers, only the
     // optional monthly-in-hand override (a user-entered real figure, not a
-    // computed one).
-    const taxResult = calculateInHandSalary(ctc, taxRegime);
+    // computed one). `hasEmployerPf` is an input fact about the user's CTC
+    // structure (like taxRegime), not a computed figure, so it's fine to
+    // take from the client; it defaults to true (employer PF included).
+    const taxResult = calculateInHandSalary(ctc, taxRegime, hasEmployerPf !== false);
     const override =
       monthlyInHandOverride !== undefined && monthlyInHandOverride !== null
         ? Number(monthlyInHandOverride)

@@ -18,12 +18,19 @@ export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
   }
 
   if (req.method === "PATCH") {
-    const { fullName, experienceYears, industry, currentRole, location } = req.body ?? {};
+    const { fullName, experienceYears, industry, currentRole, location, currentCtc } = req.body ?? {};
 
     if (experienceYears !== undefined) {
       const years = Number(experienceYears);
       if (!Number.isFinite(years) || years < 0 || years > 60) {
         badRequest("Please provide a valid experience between 0 and 60 years.");
+      }
+    }
+
+    if (currentCtc !== undefined) {
+      const ctc = Number(currentCtc);
+      if (!Number.isFinite(ctc) || ctc < 0) {
+        badRequest("Please provide a valid current CTC.");
       }
     }
 
@@ -35,6 +42,7 @@ export default withHandler(async (req: VercelRequest, res: VercelResponse) => {
         ...(industry !== undefined ? { industry } : {}),
         ...(currentRole !== undefined ? { currentRole } : {}),
         ...(location !== undefined ? { location } : {}),
+        ...(currentCtc !== undefined ? { currentCtc: Number(currentCtc) } : {}),
       },
     });
 

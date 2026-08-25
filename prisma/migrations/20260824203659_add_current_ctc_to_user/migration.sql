@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "users" ADD COLUMN     "currentCtc" DOUBLE PRECISION NOT NULL DEFAULT 0;

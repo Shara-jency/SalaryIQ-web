@@ -13,6 +13,7 @@ export function toProfileDto(user: User) {
     industry: user.industry,
     currentRole: user.currentRole,
     location: user.location,
+    currentCtc: user.currentCtc,
     createdAt: user.createdAt.toISOString(),
     updatedAt: user.updatedAt.toISOString(),
   };
