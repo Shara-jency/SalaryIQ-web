@@ -6,8 +6,8 @@ import {
   CalculatorIcon,
   ClockIcon,
   Footer,
-  HelpCircleIcon,
   HomeIcon,
+  InfoIcon,
   LogOutIcon,
   TrendingUpIcon,
   UserIcon,
@@ -63,7 +63,7 @@ export function AppShell() {
           ))}
         </nav>
         <NavLink to="/about" className={({ isActive }) => navLinkClasses(isActive)}>
-          <HelpCircleIcon className="h-5 w-5 shrink-0" aria-hidden />
+          <InfoIcon className="h-5 w-5 shrink-0" aria-hidden />
           About &amp; how to use
         </NavLink>
         {isAuthenticated ? (
@@ -83,7 +83,7 @@ export function AppShell() {
           <BrandLogo size="sm" />
           <div className="flex items-center gap-4">
             <NavLink to="/about" className="text-text-secondary" aria-label="About and how to use">
-              <HelpCircleIcon className="h-5 w-5" />
+              <InfoIcon className="h-5 w-5" />
             </NavLink>
             {isAuthenticated ? (
               <button onClick={handleLogout} className="text-danger" aria-label="Log out">

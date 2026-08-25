@@ -7,37 +7,41 @@ const HOW_TO_STEPS = [
   },
   {
     title: "Complete your profile",
-    detail: "Add your current role, industry, experience, and location so SalaryIQ can compare you against the right market benchmarks.",
+    detail:
+      "Add your current role, industry, experience, location, and (optionally) your current CTC. This drives the defaults on the Analyzer, Home, and Growth pages, and stays directly editable any time from the Profile page.",
   },
   {
     title: "Analyze your salary",
     detail:
-      "Enter your job title, experience, city, industry, company tier, and CTC. Choose \"For myself\" to save the result, or \"For someone else\" for a one-time check that isn't saved.",
+      "Choose \"For myself\" (your job title, experience, city, industry, and CTC pre-fill from your profile) or \"For someone else\" for a one-time, unsaved check. Also set company tier, tax regime, and whether your employer contributes to PF alongside your own contribution.",
   },
   {
-    title: "Review the result",
+    title: "Review and save the result",
     detail:
-      "See your estimated monthly in-hand pay, how your CTC compares to the market average for a matched role/city, and the full tax breakdown.",
+      "See your estimated monthly in-hand pay (after income tax and EPF), how your CTC compares to the market average for a matched role/city, and the full tax breakdown. Nothing is saved automatically — for \"myself\" analyses, tap \"Save this analysis\" to add it to your History and Reports.",
   },
   {
     title: "Track history",
-    detail: "Manually log salaries from previous years to build a timeline of your earnings.",
+    detail:
+      "SalaryIQ suggests a year-by-year template based on your years of experience (up to 5 years back) so you know exactly what to fill in, and shows year-over-year growth once two or more years have data.",
   },
   {
     title: "Project growth",
-    detail: "Set how many years you plan to stay and an expected hike % per year to see a compounding projection chart.",
+    detail:
+      "Enter or confirm your current annual CTC (defaults from your profile), set how many years you plan to stay and an expected hike % per year, to see a compounding projection chart.",
   },
   {
     title: "Check your reports",
-    detail: "See aggregate stats — average CTC, highest CTC, average in-hand, and how many distinct roles you've tracked — across everything you've saved.",
+    detail:
+      "See aggregate stats — saved analyses count, highest CTC, and average in-hand — plus tap into any saved analysis to view its full details or delete it.",
   },
 ];
 
 const WHAT_TO_CHECK = [
-  "Tax figures are estimates based on FY 2025–26 India tax slabs and standard deductions. Your actual in-hand pay depends on your employer's specific salary structure, PF contributions, and bonuses.",
+  "Tax and in-hand figures are estimates based on FY 2025–26 India tax slabs, standard deductions, and an assumed EPF structure (12% employee contribution, plus an equal employer contribution if you leave that toggle on) — actual in-hand may still differ based on your employer's specific salary structure and bonuses.",
   "Market benchmarks are matched by role title first (exact, then partial, then keyword inference, then experience-based fallback), so a very unusual job title may be compared against an approximated role rather than an exact match — the result panel shows which title was actually matched.",
   "Company tier adjustment (Tier 1/2/3) scales the benchmark range as a rough approximation, not a precise industry figure.",
-  "Growth projections are for planning purposes only — actual salary growth depends on performance, employer, and market conditions, not just a fixed hike percentage.",
+  "Growth projections start from whatever current CTC you enter (defaulting to your profile's Current CTC) and are for planning purposes only — actual salary growth depends on performance, employer, and market conditions, not just a fixed hike percentage.",
   "\"For someone else\" analyses are never saved, by design, so they won't show up in History, Growth, or Reports.",
 ];
 

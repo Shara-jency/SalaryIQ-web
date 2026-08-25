@@ -15,12 +15,12 @@ const FEATURES = [
   {
     icon: ClockIcon,
     title: "Salary History",
-    description: "Manually log past salaries by year so you can track how your earnings changed over time.",
+    description: "Log past salaries year by year, guided by a template based on your experience, and see your growth trend.",
   },
   {
     icon: BarChartIcon,
     title: "Reports",
-    description: "See aggregate stats across everything you've saved — average CTC, highest CTC, roles tracked.",
+    description: "See aggregate stats across everything you've saved — highest CTC, average in-hand, roles tracked.",
   },
 ];
 

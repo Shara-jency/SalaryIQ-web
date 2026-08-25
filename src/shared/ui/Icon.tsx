@@ -68,12 +68,12 @@ export function UserIcon(props: IconProps) {
   );
 }
 
-export function HelpCircleIcon(props: IconProps) {
+export function InfoIcon(props: IconProps) {
   return (
     <Svg {...props}>
       <circle cx="12" cy="12" r="9" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1.3 1-1.3 1.9" strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx="12" cy="16.7" r="0.75" fill="currentColor" stroke="none" />
+      <path d="M12 11v5.2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx="12" cy="7.8" r="0.9" fill="currentColor" stroke="none" />
     </Svg>
   );
 }
