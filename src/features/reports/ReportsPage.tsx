@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Badge, Card, EmptyState, StatTile } from "@shared/ui";
+import { Badge, Button, Card, EmptyState, StatTile } from "@shared/ui";
 import { formatCurrency } from "@shared/utils/currency";
+import { useCurrentProfile } from "@features/profile/hooks/useProfile";
+import { useDeleteSalaryEntry } from "@features/analyzer/hooks/useSalaryEntries";
 import { useReports } from "./hooks/useReports";
 import type { SalaryEntry } from "@domain/models";
 
@@ -11,8 +13,15 @@ const COMPANY_TIER_LABELS: Record<SalaryEntry["companyTier"], string> = {
 };
 
 export function ReportsPage() {
+  const { profile } = useCurrentProfile();
   const { summary, isLoading } = useReports();
+  const deleteEntry = useDeleteSalaryEntry(profile?.id);
   const [openEntry, setOpenEntry] = useState<SalaryEntry | null>(null);
+
+  const handleDelete = (entry: SalaryEntry) => {
+    if (!confirm("Delete this saved analysis?")) return;
+    deleteEntry.mutate(entry.id, { onSuccess: () => setOpenEntry(null) });
+  };
 
   if (isLoading) return null;
 
@@ -51,7 +60,18 @@ export function ReportsPage() {
                 {entry.city} • {formatCurrency(entry.annualCtc)}
               </p>
             </div>
-            <p className="text-xs text-text-light">{new Date(entry.createdAt).toLocaleDateString("en-IN")}</p>
+            <div className="flex items-center gap-3">
+              <p className="text-xs text-text-light">{new Date(entry.createdAt).toLocaleDateString("en-IN")}</p>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(entry);
+                }}
+                className="text-xs font-semibold text-danger hover:underline"
+              >
+                Delete
+              </button>
+            </div>
           </Card>
         ))}
       </div>
@@ -78,12 +98,19 @@ export function ReportsPage() {
               <p>Saved on: {new Date(openEntry.createdAt).toLocaleDateString("en-IN")}</p>
             </div>
 
-            <button
-              onClick={() => setOpenEntry(null)}
-              className="w-full rounded-lg border border-border py-2 text-sm font-semibold text-text-secondary hover:border-primary hover:text-primary"
-            >
-              Close
-            </button>
+            <div className="flex gap-3">
+              <Button variant="secondary" className="flex-1" onClick={() => setOpenEntry(null)}>
+                Close
+              </Button>
+              <Button
+                variant="danger"
+                className="flex-1"
+                loading={deleteEntry.isPending}
+                onClick={() => handleDelete(openEntry)}
+              >
+                Delete
+              </Button>
+            </div>
           </div>
         </div>
       ) : null}

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRepositories } from "@app/RepositoryProvider";
 import type { Id } from "@domain/models";
 
@@ -23,5 +23,15 @@ export function useLatestSalaryEntry(profileId: Id | undefined) {
     queryKey: [...salaryEntriesQueryKey(profileId), "latest"],
     queryFn: () => salaryEntryRepo.getLatest(profileId!),
     enabled: Boolean(profileId),
+  });
+}
+
+export function useDeleteSalaryEntry(profileId: Id | undefined) {
+  const { salaryEntryRepo } = useRepositories();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: Id) => salaryEntryRepo.delete(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: salaryEntriesQueryKey(profileId) }),
   });
 }

@@ -37,6 +37,7 @@ describe("LocalProfileRepository", () => {
       industry: "IT Services",
       currentRole: "Software Engineer",
       location: "Bangalore",
+      currentCtc: 2000000,
     });
 
     expect(await profileRepo.getCurrentProfile()).toEqual(profile);

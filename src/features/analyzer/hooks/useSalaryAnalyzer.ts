@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRepositories } from "@app/RepositoryProvider";
-import { useCurrentProfile } from "@features/profile/hooks/useProfile";
+import { PROFILE_QUERY_KEY, useCurrentProfile } from "@features/profile/hooks/useProfile";
 import {
   adjustBenchmarkForCompanyTier,
   calculateInHandSalary,
@@ -61,9 +61,12 @@ export function useSalaryAnalyzer() {
 
 // Saving is a separate, explicit step (see AnalysisResultPanel's "Save this
 // analysis" button) — analyzing no longer saves automatically, so the user
-// can try numbers out before deciding to keep one in their history.
+// can try numbers out before deciding to keep one in their history. Saving
+// also syncs the profile's Current CTC to match, since a saved self-analysis
+// represents the user's real current pay (Current CTC stays independently
+// editable on the Profile page too — see ProfileForm).
 export function useSaveSalaryAnalysis() {
-  const { salaryEntryRepo } = useRepositories();
+  const { salaryEntryRepo, profileRepo } = useRepositories();
   const { profile } = useCurrentProfile();
   const queryClient = useQueryClient();
 
@@ -73,25 +76,30 @@ export function useSaveSalaryAnalysis() {
         throw new Error("Set up your profile before saving an analysis.");
       }
       const { form, monthlyInHand, annualTax } = result;
-      return salaryEntryRepo.create({
-        profileId: profile.id,
-        analysisFor: form.analysisFor,
-        jobTitle: form.jobTitle,
-        experienceYears: form.experienceYears,
-        city: form.city,
-        industry: form.industry,
-        companyTier: form.companyTier,
-        annualCtc: form.annualCtc,
-        monthlyInHandOverride: form.monthlyInHandOverride,
-        taxRegime: form.taxRegime,
-        monthlyInHand,
-        annualTax,
-        hasEmployerPf: form.hasEmployerPf,
-      });
+      const [entry] = await Promise.all([
+        salaryEntryRepo.create({
+          profileId: profile.id,
+          analysisFor: form.analysisFor,
+          jobTitle: form.jobTitle,
+          experienceYears: form.experienceYears,
+          city: form.city,
+          industry: form.industry,
+          companyTier: form.companyTier,
+          annualCtc: form.annualCtc,
+          monthlyInHandOverride: form.monthlyInHandOverride,
+          taxRegime: form.taxRegime,
+          monthlyInHand,
+          annualTax,
+          hasEmployerPf: form.hasEmployerPf,
+        }),
+        profileRepo.updateProfile(profile.id, { currentCtc: form.annualCtc }),
+      ]);
+      return entry;
     },
     onSuccess: () => {
       if (profile) {
         queryClient.invalidateQueries({ queryKey: salaryEntriesQueryKey(profile.id) });
+        queryClient.invalidateQueries({ queryKey: PROFILE_QUERY_KEY });
       }
     },
   });

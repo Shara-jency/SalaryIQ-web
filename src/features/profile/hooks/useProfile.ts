@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRepositories } from "@app/RepositoryProvider";
 import type { UpdateProfileInput } from "@domain/models";
 
-const PROFILE_QUERY_KEY = ["profile"] as const;
+export const PROFILE_QUERY_KEY = ["profile"] as const;
 
 export function useCurrentProfile() {
   const { profileRepo } = useRepositories();

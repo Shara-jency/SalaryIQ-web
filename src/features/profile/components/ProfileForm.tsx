@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import type { CreateProfileInput, Profile } from "@domain/models";
 import { Button, Input, Select } from "@shared/ui";
 import { CITIES, INDUSTRIES, JOB_TITLES } from "@shared/constants/data";
+import { formatIndianCurrencyInput, parseCurrencyInput } from "@shared/utils/currency";
 
 interface ProfileFormProps {
   initial?: Profile | null;
@@ -20,18 +21,24 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
   const [industry, setIndustry] = useState(initial?.industry || INDUSTRIES[0]);
   const [currentRole, setCurrentRole] = useState(initial?.currentRole || JOB_TITLES[0]);
   const [location, setLocation] = useState(initial?.location || CITIES[0]);
+  const [currentCtcInput, setCurrentCtcInput] = useState(initial?.currentCtc ? String(initial.currentCtc) : "");
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
 
     const years = Number(experienceYears);
+    const currentCtc = currentCtcInput ? parseCurrencyInput(currentCtcInput) : 0;
     if (!fullName.trim()) {
       setError("Please enter your full name.");
       return;
     }
     if (!Number.isFinite(years) || years < 0 || years > 60) {
       setError("Please enter a valid experience between 0 and 60 years.");
+      return;
+    }
+    if (currentCtcInput && (!Number.isFinite(currentCtc) || currentCtc < 0)) {
+      setError("Please enter a valid current CTC.");
       return;
     }
 
@@ -42,6 +49,7 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
       industry,
       currentRole,
       location,
+      currentCtc,
     });
   };
 
@@ -57,6 +65,13 @@ export function ProfileForm({ initial, submitLabel, onSubmit, isSubmitting }: Pr
         value={experienceYears}
         onChange={(e) => setExperienceYears(e.target.value)}
         placeholder="e.g. 5.5"
+      />
+      <Input
+        label="Current annual CTC (₹, optional)"
+        inputMode="numeric"
+        value={currentCtcInput}
+        onChange={(e) => setCurrentCtcInput(formatIndianCurrencyInput(e.target.value))}
+        placeholder="e.g. 18,00,000"
       />
       <Select label="Current role" value={currentRole} onChange={(e) => setCurrentRole(e.target.value)} options={JOB_TITLES.map((t) => ({ value: t, label: t }))} />
       <Select label="Industry" value={industry} onChange={(e) => setIndustry(e.target.value)} options={INDUSTRIES.map((i) => ({ value: i, label: i }))} />

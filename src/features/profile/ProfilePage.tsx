@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge, Button, Card } from "@shared/ui";
+import { formatCurrency } from "@shared/utils/currency";
 import { useAuth } from "@app/AuthProvider";
 import { useClearProfile, useCurrentProfile, useUpdateProfile } from "./hooks/useProfile";
 import { ProfileForm } from "./components/ProfileForm";
@@ -80,6 +81,10 @@ export function ProfilePage() {
             <p className="text-xs text-text-secondary">Experience</p>
             <p className="font-semibold">{profile.experienceYears} yrs</p>
           </div>
+        </div>
+        <div>
+          <p className="text-xs text-text-secondary">Current annual CTC</p>
+          <p className="font-semibold">{profile.currentCtc ? formatCurrency(profile.currentCtc) : "Not set"}</p>
         </div>
         <div className="flex gap-6">
           <div>

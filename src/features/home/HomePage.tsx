@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowRightIcon,
@@ -12,6 +12,7 @@ import {
   TrendingUpIcon,
 } from "@shared/ui";
 import { formatCurrency } from "@shared/utils/currency";
+import { calculateInHandSalary } from "@domain/logic";
 import { useCurrentProfile } from "@features/profile/hooks/useProfile";
 import { useLatestSalaryEntry } from "@features/analyzer/hooks/useSalaryEntries";
 
@@ -34,6 +35,11 @@ export function HomePage() {
   const { data: latest } = useLatestSalaryEntry(profile?.id);
   const [showSalary, setShowSalary] = useState(true);
 
+  const currentCtc = profile?.currentCtc ?? 0;
+  // A rough estimate (new regime, employer PF assumed) purely for this
+  // at-a-glance card — the Analyzer's breakdown uses your actual choices.
+  const estimatedMonthlyInHand = useMemo(() => calculateInHandSalary(currentCtc, "new", true).monthlyInHand, [currentCtc]);
+
   return (
     <div>
       <div className="mb-6">
@@ -48,11 +54,20 @@ export function HomePage() {
             {showSalary ? <EyeIcon className="h-5 w-5" /> : <EyeOffIcon className="h-5 w-5" />}
           </button>
         </div>
-        <p className="mb-4 text-2xl font-extrabold">
-          {showSalary ? formatCurrency(latest?.annualCtc ?? 0) : "₹••••••"}
-        </p>
-        <p className="text-xs text-primary-light">Monthly in-hand (est.)</p>
-        <p className="text-lg font-bold">{showSalary ? formatCurrency(latest?.monthlyInHand ?? 0) : "₹••••••"}</p>
+        {currentCtc > 0 ? (
+          <>
+            <p className="mb-4 text-2xl font-extrabold">{showSalary ? formatCurrency(currentCtc) : "₹••••••"}</p>
+            <p className="text-xs text-primary-light">Monthly in-hand (est.)</p>
+            <p className="text-lg font-bold">{showSalary ? formatCurrency(estimatedMonthlyInHand) : "₹••••••"}</p>
+          </>
+        ) : (
+          <p className="text-sm text-white/80">
+            <Link to="/profile" className="font-semibold underline">
+              Set your current CTC
+            </Link>{" "}
+            on your profile to see it here.
+          </p>
+        )}
       </div>
 
       <h2 className="mb-3 text-sm font-bold">Quick actions</h2>

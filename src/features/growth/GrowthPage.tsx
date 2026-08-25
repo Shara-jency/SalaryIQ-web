@@ -35,15 +35,15 @@ export function GrowthPage() {
     }
   }, [savedProjection, hydrated]);
 
-  // Prefills from the latest saved analysis as a convenience, but the user
+  // Prefills from the profile's Current CTC as a convenience, but the user
   // can freely overwrite it — growth projections shouldn't be silently
-  // pinned to whatever CTC was last analyzed.
+  // pinned to whatever CTC was last analyzed or saved.
   useEffect(() => {
-    if (latestEntry && !ctcHydrated) {
-      setCtcInput(String(latestEntry.annualCtc));
+    if (profile && !ctcHydrated) {
+      setCtcInput(profile.currentCtc ? String(profile.currentCtc) : "");
       setCtcHydrated(true);
     }
-  }, [latestEntry, ctcHydrated]);
+  }, [profile, ctcHydrated]);
 
   const currentCtc = parseCurrencyInput(ctcInput);
   const isUsingLatestEntry = Boolean(latestEntry) && currentCtc === latestEntry?.annualCtc;
