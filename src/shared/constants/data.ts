@@ -26,18 +26,38 @@ export const INDUSTRIES = [
   "Government",
 ];
 
+// Grouped by career ladder — engineering and QA both go Associate -> mid ->
+// Senior -> Lead -> Associate Manager -> ... -> Senior Manager, so QA has the
+// same progression options as engineering instead of one flat "QA Engineer".
 export const JOB_TITLES = [
+  // Engineering ladder
+  "Associate Software Engineer",
   "Software Engineer",
   "Senior Software Engineer",
   "Staff Software Engineer",
   "Tech Lead",
+  // QA ladder
+  "Associate QA Engineer",
+  "QA Engineer",
+  "Senior QA Engineer",
+  "QA Lead",
+  // Shared management ladder
+  "Associate Manager",
   "Engineering Manager",
+  "Senior Manager",
+  // Other specialist roles
   "Product Manager",
+  "Technical Program Manager",
   "Data Analyst",
   "Data Scientist",
+  "Data Engineer",
+  "Machine Learning Engineer",
   "DevOps Engineer",
-  "QA Engineer",
+  "Frontend Developer",
+  "Backend Developer",
+  "Full Stack Developer",
   "UI/UX Designer",
+  "Business Analyst",
 ];
 
 export const COMPANY_TIERS: { value: CompanyTier; label: string }[] = [

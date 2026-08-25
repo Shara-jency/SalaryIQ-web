@@ -1,4 +1,11 @@
 [
+  { "jobTitle": "Associate Software Engineer", "city": "Bangalore", "minCtc": 500000, "avgCtc": 900000, "maxCtc": 1800000 },
+  { "jobTitle": "Associate Software Engineer", "city": "Mumbai", "minCtc": 450000, "avgCtc": 800000, "maxCtc": 1600000 },
+  { "jobTitle": "Associate Software Engineer", "city": "Hyderabad", "minCtc": 450000, "avgCtc": 800000, "maxCtc": 1600000 },
+  { "jobTitle": "Associate Software Engineer", "city": "Chennai", "minCtc": 400000, "avgCtc": 700000, "maxCtc": 1400000 },
+  { "jobTitle": "Associate Software Engineer", "city": "Pune", "minCtc": 400000, "avgCtc": 750000, "maxCtc": 1500000 },
+  { "jobTitle": "Associate Software Engineer", "city": "Delhi", "minCtc": 400000, "avgCtc": 750000, "maxCtc": 1500000 },
+
   { "jobTitle": "Software Engineer", "city": "Bangalore", "minCtc": 1000000, "avgCtc": 2500000, "maxCtc": 5000000 },
   { "jobTitle": "Software Engineer", "city": "Mumbai", "minCtc": 900000, "avgCtc": 2200000, "maxCtc": 4500000 },
   { "jobTitle": "Software Engineer", "city": "Hyderabad", "minCtc": 900000, "avgCtc": 2200000, "maxCtc": 4500000 },
@@ -14,6 +21,20 @@
   { "jobTitle": "Senior Software Engineer", "city": "Chennai", "minCtc": 1500000, "avgCtc": 3000000, "maxCtc": 6000000 },
   { "jobTitle": "Senior Software Engineer", "city": "Pune", "minCtc": 1600000, "avgCtc": 3000000, "maxCtc": 6000000 },
   { "jobTitle": "Senior Software Engineer", "city": "Delhi", "minCtc": 1600000, "avgCtc": 3000000, "maxCtc": 6000000 },
+
+  { "jobTitle": "Staff Software Engineer", "city": "Bangalore", "minCtc": 2500000, "avgCtc": 5000000, "maxCtc": 9500000 },
+  { "jobTitle": "Staff Software Engineer", "city": "Mumbai", "minCtc": 2200000, "avgCtc": 4500000, "maxCtc": 8500000 },
+  { "jobTitle": "Staff Software Engineer", "city": "Hyderabad", "minCtc": 2200000, "avgCtc": 4500000, "maxCtc": 8500000 },
+  { "jobTitle": "Staff Software Engineer", "city": "Chennai", "minCtc": 2000000, "avgCtc": 4000000, "maxCtc": 7500000 },
+  { "jobTitle": "Staff Software Engineer", "city": "Pune", "minCtc": 2000000, "avgCtc": 4000000, "maxCtc": 7500000 },
+  { "jobTitle": "Staff Software Engineer", "city": "Delhi", "minCtc": 2200000, "avgCtc": 4300000, "maxCtc": 8000000 },
+
+  { "jobTitle": "Tech Lead", "city": "Bangalore", "minCtc": 2200000, "avgCtc": 4200000, "maxCtc": 7500000 },
+  { "jobTitle": "Tech Lead", "city": "Mumbai", "minCtc": 2000000, "avgCtc": 3800000, "maxCtc": 6800000 },
+  { "jobTitle": "Tech Lead", "city": "Hyderabad", "minCtc": 2000000, "avgCtc": 3800000, "maxCtc": 6800000 },
+  { "jobTitle": "Tech Lead", "city": "Chennai", "minCtc": 1800000, "avgCtc": 3400000, "maxCtc": 6000000 },
+  { "jobTitle": "Tech Lead", "city": "Pune", "minCtc": 1800000, "avgCtc": 3400000, "maxCtc": 6000000 },
+  { "jobTitle": "Tech Lead", "city": "Delhi", "minCtc": 2000000, "avgCtc": 3700000, "maxCtc": 6500000 },
 
   { "jobTitle": "Frontend Developer", "city": "Bangalore", "minCtc": 800000, "avgCtc": 2000000, "maxCtc": 4000000 },
   { "jobTitle": "Frontend Developer", "city": "Mumbai", "minCtc": 700000, "avgCtc": 1800000, "maxCtc": 3500000 },
@@ -75,12 +96,33 @@
   { "jobTitle": "DevOps Engineer", "city": "Pune", "minCtc": 1000000, "avgCtc": 2000000, "maxCtc": 4200000 },
   { "jobTitle": "DevOps Engineer", "city": "Delhi", "minCtc": 1000000, "avgCtc": 2200000, "maxCtc": 4500000 },
 
+  { "jobTitle": "Associate QA Engineer", "city": "Bangalore", "minCtc": 350000, "avgCtc": 700000, "maxCtc": 1400000 },
+  { "jobTitle": "Associate QA Engineer", "city": "Mumbai", "minCtc": 300000, "avgCtc": 600000, "maxCtc": 1200000 },
+  { "jobTitle": "Associate QA Engineer", "city": "Hyderabad", "minCtc": 300000, "avgCtc": 600000, "maxCtc": 1200000 },
+  { "jobTitle": "Associate QA Engineer", "city": "Chennai", "minCtc": 300000, "avgCtc": 550000, "maxCtc": 1100000 },
+  { "jobTitle": "Associate QA Engineer", "city": "Pune", "minCtc": 300000, "avgCtc": 550000, "maxCtc": 1100000 },
+  { "jobTitle": "Associate QA Engineer", "city": "Delhi", "minCtc": 300000, "avgCtc": 600000, "maxCtc": 1200000 },
+
   { "jobTitle": "QA Engineer", "city": "Bangalore", "minCtc": 600000, "avgCtc": 1500000, "maxCtc": 3000000 },
   { "jobTitle": "QA Engineer", "city": "Mumbai", "minCtc": 500000, "avgCtc": 1300000, "maxCtc": 2600000 },
   { "jobTitle": "QA Engineer", "city": "Hyderabad", "minCtc": 500000, "avgCtc": 1300000, "maxCtc": 2600000 },
   { "jobTitle": "QA Engineer", "city": "Chennai", "minCtc": 500000, "avgCtc": 1200000, "maxCtc": 2400000 },
   { "jobTitle": "QA Engineer", "city": "Pune", "minCtc": 500000, "avgCtc": 1200000, "maxCtc": 2400000 },
   { "jobTitle": "QA Engineer", "city": "Delhi", "minCtc": 500000, "avgCtc": 1300000, "maxCtc": 2500000 },
+
+  { "jobTitle": "Senior QA Engineer", "city": "Bangalore", "minCtc": 1200000, "avgCtc": 2800000, "maxCtc": 5500000 },
+  { "jobTitle": "Senior QA Engineer", "city": "Mumbai", "minCtc": 1000000, "avgCtc": 2400000, "maxCtc": 4800000 },
+  { "jobTitle": "Senior QA Engineer", "city": "Hyderabad", "minCtc": 1000000, "avgCtc": 2400000, "maxCtc": 4800000 },
+  { "jobTitle": "Senior QA Engineer", "city": "Chennai", "minCtc": 900000, "avgCtc": 2100000, "maxCtc": 4200000 },
+  { "jobTitle": "Senior QA Engineer", "city": "Pune", "minCtc": 900000, "avgCtc": 2100000, "maxCtc": 4200000 },
+  { "jobTitle": "Senior QA Engineer", "city": "Delhi", "minCtc": 1000000, "avgCtc": 2300000, "maxCtc": 4600000 },
+
+  { "jobTitle": "QA Lead", "city": "Bangalore", "minCtc": 2000000, "avgCtc": 3800000, "maxCtc": 7000000 },
+  { "jobTitle": "QA Lead", "city": "Mumbai", "minCtc": 1800000, "avgCtc": 3400000, "maxCtc": 6200000 },
+  { "jobTitle": "QA Lead", "city": "Hyderabad", "minCtc": 1800000, "avgCtc": 3400000, "maxCtc": 6200000 },
+  { "jobTitle": "QA Lead", "city": "Chennai", "minCtc": 1600000, "avgCtc": 3000000, "maxCtc": 5500000 },
+  { "jobTitle": "QA Lead", "city": "Pune", "minCtc": 1600000, "avgCtc": 3000000, "maxCtc": 5500000 },
+  { "jobTitle": "QA Lead", "city": "Delhi", "minCtc": 1800000, "avgCtc": 3300000, "maxCtc": 6000000 },
 
   { "jobTitle": "UI/UX Designer", "city": "Bangalore", "minCtc": 800000, "avgCtc": 1800000, "maxCtc": 3600000 },
   { "jobTitle": "UI/UX Designer", "city": "Mumbai", "minCtc": 700000, "avgCtc": 1600000, "maxCtc": 3200000 },

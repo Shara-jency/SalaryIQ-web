@@ -21,6 +21,8 @@ function inferBenchmarkTitle(title: string): string | null {
   const t = title.toLowerCase();
 
   if (t.includes("product") && t.includes("manager")) return "Product Manager";
+  if (t.includes("qa") && t.includes("lead")) return "QA Lead";
+  if ((t.includes("tech") || t.includes("technical")) && t.includes("lead")) return "Tech Lead";
   if (t.includes("engineering") && (t.includes("manager") || t.includes("lead") || t.includes("head")))
     return "Engineering Manager";
   if (t.includes("manager") || t.includes("lead") || t.includes("head of"))
@@ -52,12 +54,17 @@ function inferBenchmarkTitle(title: string): string | null {
     return "Backend Developer";
   if (t.includes("full stack") || t.includes("fullstack") || t.includes("full-stack"))
     return "Full Stack Developer";
-  if (t.includes("qa") || t.includes("quality assurance") || t.includes("sdet") || t.includes("test engineer"))
-    return "QA Engineer";
+  const isQaKeyword =
+    t.includes("qa") || t.includes("quality assurance") || t.includes("sdet") || t.includes("test engineer");
+  if (t.includes("senior") && isQaKeyword) return "Senior QA Engineer";
+  if (t.includes("associate") && isQaKeyword) return "Associate QA Engineer";
+  if (isQaKeyword) return "QA Engineer";
   if (t.includes("ui") || t.includes("ux") || t.includes("design")) return "UI/UX Designer";
   if (t.includes("business analyst") || t.includes("system analyst")) return "Business Analyst";
   if (t.includes("senior") && (t.includes("engineer") || t.includes("developer")))
     return "Senior Software Engineer";
+  if (t.includes("associate") && (t.includes("software") || t.includes("engineer") || t.includes("developer")))
+    return "Associate Software Engineer";
   if (t.includes("software") || t.includes("engineer") || t.includes("developer"))
     return "Software Engineer";
   if (t.includes("analyst")) return "Data Analyst";
